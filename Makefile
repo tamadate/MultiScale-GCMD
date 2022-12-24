@@ -1,4 +1,4 @@
-NAME        = ../../test2/myprogram
+NAME        = ./test/myprogram
 SRCS        = ./src/*cpp ./src/*/*cpp ./src/*/*/*cpp
 OBJS        = $(SRCS:.cpp=.o)
 CXX         = g++

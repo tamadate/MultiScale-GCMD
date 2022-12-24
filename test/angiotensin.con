@@ -1,0 +1,19 @@
+Input	valine.atom
+Vapor	MeOH.atom	100
+Gas	N2	1000
+Temperature	300
+Pressure	100000
+Time step	0.5
+TotalSteps	10000000000
+RelaxSteps	200000
+NVTion	300
+NVTgas	OFF
+Output	valine	10
+
+Interactions
+	ion	AMBER
+	gg	OFF
+	gi	LJ
+	gv	LJ
+	vi	LJcoul
+	vv	LJcoul
