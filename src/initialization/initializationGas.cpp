@@ -25,14 +25,14 @@ MD::initialization_gas(void) {
 	double dis=5;	/*	minimum gas-gas, gas-ion distance */
 	int Nsofar=vars->Molecules.size();
 
-  // Maxwell-Boltzumann distribution generator
+	// Maxwell-Boltzumann distribution generator
 	random_device seed;
 	default_random_engine engine(seed());
 	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
 	mt19937 mt(seed());
 	uniform_real_distribution<double> r(-d_size*0.5,d_size*0.5);
 
-  // Sampling gas molecules
+  	// Sampling gas molecules
 	int i=0;
 	do {
 		Molecule a;

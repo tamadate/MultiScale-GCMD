@@ -18,21 +18,25 @@ MD::readCondFile(char* condfile){
 		while(getline(stream,reading,'\t')) {
 			readings.push_back(reading);
 		}
+		// Input file name for ion molecule
 		if(readings[0]=="Input"){
 			strcpy(atomFile,readings[1].c_str());
 			cout<<"Atom file -->\t\t"<<readings[1]<<endl;
 		}
+		// Input file name for vapor molecule
 		if(readings[0]=="Vapor"){
 			strcpy(vaporFile,readings[1].c_str());
 			Nof_around_vapor=stoi(readings[2]);
 			cout<<"Vapor file -->\t\t"<<readings[1]<<endl;
 			cout<<"Number of vapors\t"<<Nof_around_vapor<<endl;
 		}
+		// Restart condition file name (option)
 		if(readings[0]=="TakeOver"){
 			strcpy(takeOverFile,readings[1].c_str());
 			flags->takeOver=1;
 			cout<<"Take over from -->\t"<<readings[1]<<endl;
 		}
+		// Vapor sticking position file name
 		if(readings[0]=="VaporStickPositions"){
 			strcpy(vaporStickFile,readings[1].c_str());
 			positionLogStep=stoi(readings[2]);
@@ -44,6 +48,7 @@ MD::readCondFile(char* condfile){
 			}
 			cout<<"Vapor stick position file -->\t\t"<<readings[1]<<endl;
 		}
+		// N of gas molecule and specie 
 		if(readings[0]=="Gas"){
 			Atom_type at;
 			if(readings[1]=="He"){
@@ -76,42 +81,54 @@ MD::readCondFile(char* condfile){
 			}
 			vars->atypes.push_back(at);
 			Nof_around_gas=stoi(readings[2]);
-			vars->pair_coeff.resize(1);
+			// Push gas molecule potential parameters
+			vars->pair_coeff.resize(1);	// Resize only for gas molecule
 			double epu=at.coeff1;
 			double sigma=at.coeff2;
+			vars->pair_coeff.resize(1);
+			vars->pair_coeff[0].resize(1);
+			vars->pair_coeff[0][0].resize(2);
 			vars->pair_coeff[0][0][0]=48 * epu*pow(sigma,12.0);
 			vars->pair_coeff[0][0][1]=24 * epu*pow(sigma,6.0);
 			cout<<"Gastype\t\t\t"<<readings[1]<<endl;
 			cout<<"Number of gases\t\t"<<Nof_around_gas<<endl;
 		}
+		// Set temperature
 		if(readings[0]=="Temperature"){
 			T=stod(readings[1]);
 			cout<<"Temperature\t\t"<<T<<" K"<<endl;
 		}
+		// Set pressure
 		if(readings[0]=="Pressure"){
 			p=stod(readings[1]);
 			cout<<"Pressure\t\t"<<p<<" Pa"<<endl;
 		}
+		// Set time step
 		if (readings[0]=="dt") {
 			dt=stod(readings[1]);
 			cout<<"Time step\t\t"<<dt<<" fs"<<endl;
 		}
+		// Set total time steps
 		if (readings[0]=="TotalSteps") {
 			Noftimestep=stod(readings[1]);
 			cout<<"Total steps\t\t"<<float(Noftimestep)<<endl;
 		}
+		// Set time steps for thermal relaxation
 		if (readings[0]=="RelaxSteps") {
 			step_relax=stod(readings[1]);
 			cout<<"Relax steps\t\t"<<float(step_relax)<<endl;
 		}
+		// Set cutoff diameter
 		if (readings[0]=="CutOff") {
 			CUTOFF=stod(readings[1]);
 			cout<<"Cutoff\t\t\t"<<CUTOFF<<" ang."<<endl;
 		}
+		// Set margin size
 		if (readings[0]=="Margin") {
 			MARGIN=stod(readings[1]);
 			cout<<"Margin size\t\t"<<MARGIN<<" ang."<<endl;
 		}
+		// Set output file name
 		if (readings[0]=="Output") {
 			ostringstream ss;
 			ss<<readings[1]<<"_"<<calculation_number<<".dump";
@@ -123,6 +140,7 @@ MD::readCondFile(char* condfile){
 			fclose(f);
 			cout<<"Dump file -->\t\t"<<tmp2<<endl;
 		}
+		// Set emsemble of ion
 		if (readings[0]=="NVTion") {
 			if (readings[1]=="OFF") {
 				flags->nose_hoover_ion=0;
@@ -139,6 +157,7 @@ MD::readCondFile(char* condfile){
 				cout<<"Nose-Hoover for ion --> ON --> "<<pp->Tnh_ion<<" K"<<endl;
 			}
 		}
+		// Set emsemble of gas (can not use this option now)
 		if (readings[0]=="NVTgas") {
 			if (readings[1]=="OFF") {
 				flags->nose_hoover_gas=0;
@@ -150,13 +169,15 @@ MD::readCondFile(char* condfile){
 				cout<<"Nose-Hoover for gas --> ON --> "<<pp->Tnh_gas<<" K"<<endl;
 			}
 		}
-
+		// Set interactions
 		if (readings[0]=="Interactions") {continue;}
+		// Gas-Gas interaction
 		if (readings[1]=="gg") {
 			if (readings[2]=="LJ") flags->inter_gg=1;
 			else if (readings[2]=="OFF") flags->inter_gg=0;
 			else printf("**************Uknown gas gas parameter was found**************\n");
 		}
+		// Gas-Ion interaction
 		if (readings[1]=="gi"||readings[1]=="ig") {
 			if (readings[2]=="LJ") flags->force_lj=1;
 			else if (readings[2]=="ion dipole") flags->force_ion_dipole=1;
@@ -166,6 +187,7 @@ MD::readCondFile(char* condfile){
 			}
 			else printf("**************Uknown gas ion parameter was found**************\n");
 		}
+		// Ion intramolecular interaction
 		if (readings[1]=="ion") {
 			if (readings[2]=="AMBER") flags->intra_AMBER=1;
 			else if (readings[2]=="Stilinger-Weber") flags->force_sw=1;
@@ -173,27 +195,32 @@ MD::readCondFile(char* condfile){
 			else if (readings[2]=="Born-Mayer-Huggins-NaCl") flags->force_born=1;
 			else printf("**************Uknown ion parameter was found**************\n");
 		}
+		// Vapor-Ion interaction
 		if (readings[1]=="vi"||readings[1]=="iv") {
 			if (readings[2]=="LJcoul") flags->inter_vi=1;
 			else if (readings[2]=="OFF") flags->inter_vi=0;
 			else printf("**************Uknown vapor ion parameter was found**************\n");
 		}
+		// Vapor-Vapor interaction
 		if (readings[1]=="vv"||readings[1]=="vv") {
 			if (readings[2]=="LJcoul") flags->inter_vv=1;
 			else if (readings[2]=="OFF") flags->inter_vv=0;
 			else printf("**************Uknown vapor vapor parameter was found**************\n");
 		}
+		// Gas-Vapor interaction
 		if (readings[1]=="gv"||readings[1]=="vg") {
 			if (readings[2]=="LJ") flags->inter_vg=1;
 			else if (readings[2]=="OFF") flags->inter_vg=0;
 			else printf("**************Uknown vapor vapor parameter was found**************\n");
 		}
+		// Electric field
 		if (readings[1]=="Efield") {
 			flags->efield=1;
 			Ecoeff[0]=stod(readings[2]);
 			Ecoeff[1]=stod(readings[3]);
 			Ecoeff[2]=stod(readings[4]);
 		}
+		// Gyration radius of ion
 		if (readings[0]=="Gyration") {
 			ostringstream ss;
 			ss<<readings[1]<<"_"<<calculation_number<<".dat";
@@ -206,8 +233,8 @@ MD::readCondFile(char* condfile){
 			cout<<"Gyration --> ON -->\t"<<tmp<<endl;
 		}
 	}
-	d_size=pow(Nof_around_gas*kb*T/p,1/3.0)*1e10;//pow(28.0855*8/6.02e23/(2.218e-24),1/3.0)*5;
-	V=d_size*d_size*d_size;
+	d_size=pow(Nof_around_gas*kb*T/p,1/3.0)*1e10;  // Calculation box size
+	V=d_size*d_size*d_size;		// Calculation box volume
 	CL2 = (CUTOFF)*(CUTOFF);
 	ML2 = (CUTOFF+MARGIN)*(CUTOFF+MARGIN);
 	cout<<"Cut off length\t\t"<<CUTOFF<<" ang."<<endl;

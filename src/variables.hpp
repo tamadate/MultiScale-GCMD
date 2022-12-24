@@ -58,8 +58,7 @@ public:
 	void setGasPotentials(void);
 	void setBMHPotential(void);
 	void setCrossPotentials(int Nion,int Nvapor);
-	void setInitialRegion(void);
-
+	
 	/*initialization and export to dump file*/
 	void read_initial(char* ionFile, char* vaporFile);
 	int readIonFile(char* infile);

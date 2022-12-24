@@ -30,19 +30,21 @@ MD::MD(char* condfile, int calcNumber) {
 	totalVaporIn=1;
 
 	setCondition(condfile);
-	output_initial();
-	vars->read_initial(atomFile,vaporFile);
+	output_initial();	
+	vars->read_initial(atomFile,vaporFile);	// Read initial ion structure and vapor structure
 	vars->ionInitialVelocity(T);
-
 	setPotential(flags,1);
+
+	// This function is currently not working
 	if(flags->takeOver==1){
 		takeOver();
 		//cout<<takeOverFile<<endl;
 	}
 
 	initialization_gas();	//Set initial positions & velocities for gas
-  initialization_vapor();	//Set initial positions & velocities for vapor
+ 	initialization_vapor();	//Set initial positions & velocities for vapor
 	analysis_ion();
+	setRegion();
 	make_pair();
 	margin_length = MARGIN;
 	vars->tzero();

@@ -3,11 +3,6 @@
 Variables::Variables(void) {
   time = 0.0;
   Utotal.Uion=Utotal.Ugas=Utotal.Uvap=Utotal.Ugi=Utotal.Ugg=Utotal.Uvg=Utotal.Uvi=Utotal.Uvv=0;
-
-  Molecule mol;
-  mol.qx=mol.qy=mol.qz;
-  mol.px=mol.py=mol.pz;
-  mol.fx=mol.fy=mol.fz;
   MolID.resize(3);
   MolID[0].push_back(0);
 }
@@ -18,8 +13,7 @@ Variables::read_initial(char* ionFile, char* vaporFile) {
   int Ntype_ion=readIonFile(ionFile);
   int Ntype_vapor=readVaporFile(vaporFile);
   setBMHPotential();
-  setCrossPotentials(Ntype_ion,Ntype_vapor);
-  setInitialRegion();
+  setCrossPotentials(Ntype_ion,Ntype_vapor); // LJ potential parameters (BL rule)
   ionRotation();
 }
 
@@ -126,27 +120,9 @@ Variables::ionInitialVelocity(double T) {
   for(auto &a : Molecules[0].inAtoms) {
     double matom=a.mass*1e-3/Nw;
     normal_distribution<> dist(0.0, sqrt(kb*T/matom));
-		a.px=dist(engine)*1e-5;
-		a.py=dist(engine)*1e-5;
-		a.pz=dist(engine)*1e-5;
+    a.px=dist(engine)*1e-5;
+    a.py=dist(engine)*1e-5;
+    a.pz=dist(engine)*1e-5;
 	}
 }
 
-void
-Variables::setInitialRegion(void) {
-  int Nmol=Molecules.size();
-  Region.resize(Nmol);
-  int i=0;
-  for (auto &mol : Molecules){
-    double dx=mol.qx-Molecules[0].qx;
-    double dy=mol.qy-Molecules[0].qy;
-    double dz=mol.qz-Molecules[0].qz;
-    double dr2=dx*dx+dy*dy+dz*dz;
-    if(dr2<RO2) Region[i]=00000001;
-    else {
-      if(dr2<RI2) Region[i]=00000011;
-      else Region[i]=00000010;
-    }
-    i++;
-  }
-}

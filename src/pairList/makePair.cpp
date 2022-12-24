@@ -13,7 +13,7 @@ void
 MD::make_pair(void){
 	updateInOut();
 	make_pairLJ();
-  make_pairLJCoul();
+ 	make_pairLJCoul();
 	make_pairLJHybrid();
 	make_pairsLJCoulHybrid();
 	// set number of steps for next pair list update

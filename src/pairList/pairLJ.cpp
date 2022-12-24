@@ -8,7 +8,7 @@ void
 MD::make_pairLJ(void){
 	vars->pairsLJ.clear();
 	Molecule *mols=vars->Molecules.data();
-	for (auto &i : vars->MolID[1]){
+	for (auto i : vars->MolID[1]){
 		if(vars->Region[i]==CG) continue;
 		int j=0;
 		for(auto &ion : vars->Molecules[0].inAtoms){
@@ -24,6 +24,5 @@ MD::make_pairLJ(void){
 			}
 			j++;
 		}
-		i++;
 	}
 }

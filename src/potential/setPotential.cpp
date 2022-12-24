@@ -4,7 +4,7 @@
 
 void
 MD::setPotential(FLAG *flags,int mode){
-//ion-ion
+	//ion-ion
 	IntraInter.clear();
 	InterInter.clear();
 	int flag=0;

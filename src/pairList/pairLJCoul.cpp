@@ -8,7 +8,7 @@ void
 MD::make_pairLJCoul(void){
 	vars->pairsLJCoul.clear();
 	Molecule *mols=vars->Molecules.data();
-	for (auto &i : vars->MolID[2]){
+	for (auto i : vars->MolID[2]){
 		if(vars->Region[i]==CG) continue;
 		int j=0;
 		for(auto &ion : vars->Molecules[0].inAtoms){
@@ -24,6 +24,5 @@ MD::make_pairLJCoul(void){
 			}
 			j++;
 		}
-		i++;
 	}
 }

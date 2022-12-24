@@ -76,14 +76,15 @@ class MD {
 	void make_pairLJHybrid(void);
 	void make_pairLJCoul(void);
 	void check_pairlist(void);
-  void makeDiatomicProp_in(Molecule &gasOut);
+  	void makeDiatomicProp_in(Molecule &gasOut);
 	void makePolyatomicProp_in(Molecule &vapOut);
 	double margin_length;
 
 //	initialization
 	void initialization_gas(void);
-  void initialization_vapor(void);
+	void initialization_vapor(void);
 	void takeOver(void);
+	void setRegion(void);
 
 //	periodic
 	void boundary_scaling_gas_move(void);

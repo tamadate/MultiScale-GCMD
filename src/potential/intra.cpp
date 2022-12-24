@@ -49,21 +49,22 @@ PotentialGasIntra::compute(Variables *vars, FLAG *flags){
 	vars->times.tgas-=omp_get_wtime();
 	Molecule *mols = vars->Molecules.data();
 	for(auto &i : vars->MolID[1]){
+		if(vars->Region[i]==CG) continue;
 		double dr2=vars->distFromIon(mols[i]);
-    double dx = mols[i].inAtoms[0].qx - mols[i].inAtoms[1].qx;
-    double dy = mols[i].inAtoms[0].qy - mols[i].inAtoms[1].qy;
-    double dz = mols[i].inAtoms[0].qz - mols[i].inAtoms[1].qz;
-    double rsq = (dx * dx + dy * dy + dz * dz);
-    double r = sqrt(rsq);
+    	double dx = mols[i].inAtoms[0].qx - mols[i].inAtoms[1].qx;
+		double dy = mols[i].inAtoms[0].qy - mols[i].inAtoms[1].qy;
+		double dz = mols[i].inAtoms[0].qz - mols[i].inAtoms[1].qz;
+		double rsq = (dx * dx + dy * dy + dz * dz);
+		double r = sqrt(rsq);
 		double dr= r - 1.098;
-    double rk = 1221.7 * dr;
-    double force_bond_harmonic = -2.0*rk/r;
-    mols[i].inAtoms[0].fx += force_bond_harmonic * dx;
-    mols[i].inAtoms[0].fy += force_bond_harmonic * dy;
-    mols[i].inAtoms[0].fz += force_bond_harmonic * dz;
-    mols[i].inAtoms[1].fx -= force_bond_harmonic * dx;
-    mols[i].inAtoms[1].fy -= force_bond_harmonic * dy;
-    mols[i].inAtoms[1].fz -= force_bond_harmonic * dz;
+		double rk = 1221.7 * dr;
+		double force_bond_harmonic = -2.0*rk/r;
+		mols[i].inAtoms[0].fx += force_bond_harmonic * dx;
+		mols[i].inAtoms[0].fy += force_bond_harmonic * dy;
+		mols[i].inAtoms[0].fz += force_bond_harmonic * dz;
+		mols[i].inAtoms[1].fx -= force_bond_harmonic * dx;
+		mols[i].inAtoms[1].fy -= force_bond_harmonic * dy;
+		mols[i].inAtoms[1].fz -= force_bond_harmonic * dz;
 		if(flags->eflag) vars->Utotal.Ugas+=rk*dr;
 	}
 	vars->times.tgas+=omp_get_wtime();
