@@ -18,6 +18,7 @@ PotentialLJHybrid::compute(Variables *vars, FLAG *flags) {
 			double dx = mols[i].qx - mols[j].qx;
 			double dy = mols[i].qy - mols[j].qy;
 			double dz = mols[i].qz - mols[j].qz;
+			adjust_periodic(dx, dy, dz, vars->domainL);
 			double rsq = (dx * dx + dy * dy + dz * dz);
 			double r2inv = 1/rsq;
 			double r6inv = r2inv * r2inv * r2inv;
@@ -25,6 +26,9 @@ PotentialLJHybrid::compute(Variables *vars, FLAG *flags) {
 			int type2=mols[j].type;
 			double force_lj = r6inv * (vars->pair_coeff_CG[type1][type2][0] * r6inv - vars->pair_coeff_CG[type1][type2][1]);
 			double force_pair = (force_lj)*r2inv*(1-w);
+			if(force_pair>1000) {
+				double xx=0;
+			}
 			mols[i].fx += force_pair * dx;
 			mols[i].fy += force_pair * dy;
 			mols[i].fz += force_pair * dz;
@@ -41,6 +45,7 @@ PotentialLJHybrid::compute(Variables *vars, FLAG *flags) {
 					double dx = a2.qx - a1.qx;
 					double dy = a2.qy - a1.qy;
 					double dz = a2.qz - a1.qz;
+					adjust_periodic(dx, dy, dz, vars->domainL);
 					double rsq = (dx * dx + dy * dy + dz * dz);
 					double r2inv = 1/rsq;
 					double r6inv = r2inv * r2inv * r2inv;
@@ -48,13 +53,16 @@ PotentialLJHybrid::compute(Variables *vars, FLAG *flags) {
 					int type2=a2.type;
 					double force_lj = r6inv * (vars->pair_coeff[type1][type2][0] * r6inv - vars->pair_coeff[type1][type2][1]);
 					double force_pair = (force_lj)*r2inv*w;
+					if(force_pair>1000) {
+						double xx=0;
+					}
 					a2.fx += force_pair * dx;
 					a2.fy += force_pair * dy;
 					a2.fz += force_pair * dz;
 					a1.fx -= force_pair * dx;
 					a1.fy -= force_pair * dy;
 					a1.fz -= force_pair * dz;
-					if(flags->eflag) {
+					if(flags->eflag) {	
 						vars->Utotal.Uvg+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0)*w;
 					}
 				}

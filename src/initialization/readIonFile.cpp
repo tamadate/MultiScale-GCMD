@@ -1,6 +1,6 @@
 #include "../variables.hpp"
 
-int
+void
 Variables::readIonFile(char* infile){
 	ifstream stream(infile);
 	string str;
@@ -184,5 +184,4 @@ Variables::readIonFile(char* infile){
 			Molecules[0].dihedrals.push_back(d);
 		}
 	}
-	return num_atoms;
 }

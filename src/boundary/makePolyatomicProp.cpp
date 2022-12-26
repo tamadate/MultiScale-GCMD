@@ -5,8 +5,8 @@
 void
 MD::makeDiatomicProp_in(Molecule &gasOut){
 	random_device seed;
-  mt19937 mt(seed());
-  normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
+	mt19937 mt(seed());
+	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
 	uniform_real_distribution<double> r(0,1);
 	std::vector<Atom> at=vars->atomGas(gastype);
 	gasOut.mass=pp->Mgas;
@@ -24,7 +24,7 @@ MD::makeDiatomicProp_in(Molecule &gasOut){
 		at[1].pz=-vz_rot;
 	}
 	for (auto &ag : at){
-    vars->ROTATION(ag.qx,ag.qy,ag.qz,a,b,c,ag.qx,ag.qy,ag.qz);
+    	vars->ROTATION(ag.qx,ag.qy,ag.qz,a,b,c,ag.qx,ag.qy,ag.qz);
 		vars->ROTATION(ag.px,ag.py,ag.pz,a,b,c,ag.px,ag.py,ag.pz);
 		ag.qx+=gasOut.qx;
 		ag.qy+=gasOut.qy;
@@ -32,28 +32,28 @@ MD::makeDiatomicProp_in(Molecule &gasOut){
 		ag.px+=gasOut.px;
 		ag.py+=gasOut.py;
 		ag.pz+=gasOut.pz;
-  }
+	}
 	gasOut.inAtoms=at;
 }
 
 
 void
 MD::makePolyatomicProp_in(Molecule &vapOut){
-  random_device seed;
-  mt19937 mt(seed());
-  default_random_engine engine(seed());
-  normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mvapor));
-  uniform_real_distribution<double> r(0,1);
+	random_device seed;
+	mt19937 mt(seed());
+	default_random_engine engine(seed());
+	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mvapor));
+	uniform_real_distribution<double> r(0,1);
 
-  double a=r(mt)*2*M_PI;
-  double b=r(mt)*2*M_PI;
-  double c=r(mt)*2*M_PI;
+	double a=r(mt)*2*M_PI;
+	double b=r(mt)*2*M_PI;
+	double c=r(mt)*2*M_PI;
 	std::vector<Atom> at=vars->atomVapor;
-	vapOut.mass=pp->mvapor;
+	vapOut.mass=pp->Mvapor;
 
 	for (auto &av : at){
-    vars->ROTATION(av.qx,av.qy,av.qz,a,b,c,av.qx,av.qy,av.qz);
-    vars->ROTATION(av.px,av.py,av.pz,a,b,c,av.px,av.py,av.pz);
+	vars->ROTATION(av.qx,av.qy,av.qz,a,b,c,av.qx,av.qy,av.qz);
+	vars->ROTATION(av.px,av.py,av.pz,a,b,c,av.px,av.py,av.pz);
 		av.qx+=vapOut.qx;
 		av.qy+=vapOut.qy;
 		av.qz+=vapOut.qz;

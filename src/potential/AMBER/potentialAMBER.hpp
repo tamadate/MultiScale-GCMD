@@ -4,7 +4,6 @@
 
 class PotentialAMBER : public Potential {
 	private:
-		string potName="AMBER ion";
 		std::vector<Pair> longPair;
 	public:
 		void printName(void) {cout<<potName<<endl;}
@@ -16,6 +15,7 @@ class PotentialAMBER : public Potential {
 		void initialAMBER(Variables *vars, FLAG *flags);
 		PotentialAMBER(Variables *vars, FLAG *flags){
 			initialAMBER(vars,flags);
+			potName="AMBER ion";
 		};
 		~PotentialAMBER(){};
 };

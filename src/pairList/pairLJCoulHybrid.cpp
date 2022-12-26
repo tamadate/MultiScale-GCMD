@@ -15,7 +15,7 @@ MD::make_pairsLJCoulHybrid(void){
 			double dx = mols[i].qx - mols[j].qx;
 			double dy = mols[i].qy - mols[j].qy;
 			double dz = mols[i].qz - mols[j].qz;
-			adjust_periodic(dx, dy, dz, d_size);
+			adjust_periodic(dx, dy, dz, vars->domainL);
 			double r2 = (dx * dx + dy * dy + dz * dz);
 			// 00000001|00000001=00000001
 			// 00000011|00000001=00000011

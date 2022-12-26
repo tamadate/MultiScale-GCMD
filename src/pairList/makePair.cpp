@@ -12,6 +12,7 @@
 void
 MD::make_pair(void){
 	updateInOut();
+	vars->setCellIndex(vars->domainL*0.5);
 	make_pairLJ();
  	make_pairLJCoul();
 	make_pairLJHybrid();

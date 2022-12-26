@@ -22,7 +22,7 @@ This makes connection between thermal relaxation and main diffusion coeficient c
 void
 MD::initialization_gas(void) {
 	double dx,dy,dz, d;
-	double dis=5;	/*	minimum gas-gas, gas-ion distance */
+	double dis=10;	/*	minimum gas-gas, gas-ion distance */
 	int Nsofar=vars->Molecules.size();
 
 	// Maxwell-Boltzumann distribution generator
@@ -30,7 +30,7 @@ MD::initialization_gas(void) {
 	default_random_engine engine(seed());
 	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
 	mt19937 mt(seed());
-	uniform_real_distribution<double> r(-d_size*0.5,d_size*0.5);
+	uniform_real_distribution<double> r(-vars->domainL*0.5,vars->domainL*0.5);
 
   	// Sampling gas molecules
 	int i=0;
@@ -49,7 +49,7 @@ MD::initialization_gas(void) {
 					double dx=a.qx-c.qx;
 					double dy=a.qy-c.qy;
 					double dz=a.qz-c.qz;
-					adjust_periodic(dx, dy, dz, d_size);
+					adjust_periodic(dx, dy, dz, vars->domainL);
 					double d=sqrt(dx*dx+dy*dy+dz*dz);
 					if(d<min_dis) min_dis=d; // minimum gas-ion distance
 				}
@@ -57,9 +57,9 @@ MD::initialization_gas(void) {
 			// min distance from existing gas & vapor molecules
 			else{
 				double dx=a.qx-b.qx;
-				double dy=a.qy-b.qx;
-				double dz=a.qx-b.qx;
-				adjust_periodic(dx, dy, dz, d_size);
+				double dy=a.qy-b.qy;
+				double dz=a.qx-b.qz;
+				adjust_periodic(dx, dy, dz, vars->domainL);
 				double d=sqrt(dx*dx+dy*dy+dz*dz);
 				if(d<min_dis) min_dis=d; // minimum gas-gas distance
 			}
@@ -73,6 +73,7 @@ MD::initialization_gas(void) {
 			a.px=distgas(engine)*1e-5;
 			a.py=distgas(engine)*1e-5;
 			a.pz=distgas(engine)*1e-5;
+			a.fx=a.fy=a.fz=0;
 			a.mass=pp->Mgas;
 			a.type=1;
 			a.id=i;

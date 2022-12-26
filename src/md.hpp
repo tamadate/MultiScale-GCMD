@@ -35,10 +35,10 @@ class MD {
 	double MARGIN;
 	double ML2;
 	double CL2;
-	double d_size;
 	double V;
 	void setCondition(char* condfile);
 	void readCondFile(char* condfile);
+	void read_initial(void);
 
 	long int itime;
 	std::vector<long int> collisionFlagGas;
@@ -58,11 +58,12 @@ class MD {
 	void updateInCenters(void);
 
 //	velocity verlet
-	void run_diff(char** argv);
+	void run(char** argv);
 	void verlet(void);
 	void update_position(void);
 	void velocity_calculation(void);
 	void forceCombine(void);
+	void AACG_totalForce(void);
 
 //	pair list
 	void updateInOut(void);
@@ -74,11 +75,14 @@ class MD {
 	void make_pair_vaporion(void);
 	void make_pairsLJCoulHybrid();
 	void make_pairLJHybrid(void);
+	void make_pairLJHybridTest(void);
 	void make_pairLJCoul(void);
 	void check_pairlist(void);
   	void makeDiatomicProp_in(Molecule &gasOut);
 	void makePolyatomicProp_in(Molecule &vapOut);
 	double margin_length;
+	void make_pairLJHybridSub(int i1, int j1,int k1, int i2,int j2, int k2);
+	void make_pairLJHybridSelf(int i, int j, int k);
 
 //	initialization
 	void initialization_gas(void);
@@ -95,7 +99,6 @@ class MD {
 	double pre_ion[3];
 
 //	analysis (calculating position and velocity of center of mass)
-	void analysis_ion(void);	/*	calculation of center of ion1 and ion2, also collision judgement of collision and not collision	*/
 	double gyration;
 
 //	export
@@ -151,7 +154,6 @@ class MD {
 		delete mbdist;
 		delete mbdistV;
 	}
-	void run(char** argv);
 };
 
 

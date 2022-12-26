@@ -4,53 +4,22 @@ Variables::Variables(void) {
   time = 0.0;
   Utotal.Uion=Utotal.Ugas=Utotal.Uvap=Utotal.Ugi=Utotal.Ugg=Utotal.Uvg=Utotal.Uvi=Utotal.Uvv=0;
   MolID.resize(3);
-  MolID[0].push_back(0);
+  initialCellIndex();
 }
 
 
 void
-Variables::read_initial(char* ionFile, char* vaporFile) {
-  int Ntype_ion=readIonFile(ionFile);
-  int Ntype_vapor=readVaporFile(vaporFile);
-  setBMHPotential();
-  setCrossPotentials(Ntype_ion,Ntype_vapor); // LJ potential parameters (BL rule)
-  ionRotation();
-}
-
-
-void
-Variables::setCrossPotentials(int Nion,int Nvapor){
-  int Natypes=atypes.size();
-  pair_coeff.resize(Natypes);
-  for (int i=0;i<Natypes;i++){
-    pair_coeff[i].resize(Natypes);
-    for (int j=0;j<Natypes;j++){
-      pair_coeff[i][j].resize(2);
+Variables::initialCellIndex(void){
+  cellIndexSize=10;
+  cellIndex.resize(cellIndexSize);
+  for(auto &a : cellIndex) {
+    a.resize(cellIndexSize);
+    for(auto &b : a) {
+      b.resize(cellIndexSize);
     }
   }
-  for (int i=0;i<Natypes;i++){
-    for (int j=0;j<Natypes;j++){
-      double epu=sqrt(atypes[i].coeff1*atypes[j].coeff1);
-      double sigma=(atypes[i].coeff2+atypes[j].coeff2)*0.5;
-      //sigma=sqrt(atypes_v[i].coeff2*atypes_v[j].coeff2);
-      pair_coeff[i][j][0]=48 * epu*pow(sigma,12.0);
-      pair_coeff[i][j][1]=24 * epu*pow(sigma,6.0);
-    }
-  }
-
-  double epu11=0.14397; // gas CG potential
-  double sigma11=3.798; // gas CG potential
-  double epu22=0.14397; // vapor CG potential
-  double sigma22=3.798; // vapor CG potential
-  double epu12=sqrt(epu11*epu22);
-  double sigma12=(sigma11+sigma11)*0.5;
-  pair_coeff_CG[1][1][0]= 48 * epu11*pow(sigma11,12.0);
-  pair_coeff_CG[1][1][1]= 24 * epu11*pow(sigma11,6.0);
-  pair_coeff_CG[2][2][0]= 48 * epu22*pow(sigma22,12.0);
-  pair_coeff_CG[2][2][1]= 24 * epu22*pow(sigma22,6.0);
-  pair_coeff_CG[1][2][0]=pair_coeff_CG[2][1][1]= 48 * epu12*pow(sigma12,12.0);
-  pair_coeff_CG[1][2][1]=pair_coeff_CG[2][1][1]= 24 * epu12*pow(sigma12,6.0);
 }
+
 
 void
 Variables::setBMHPotential(void){
@@ -80,37 +49,6 @@ Variables::setBMHPotential(void){
   	bornCoeff[0][0][4]=3.1546;
   	bornCoeff[0][1][4]=bornCoeff[1][0][4]=3.1546;
   	bornCoeff[1][1][4]=3.1546;
-}
-
-
-void
-Variables::ionRotation(void){
-  random_device seed;
-	double A,B,C,x,y,z;
-	A=seed(),B=seed(),C=seed();
-	for(auto &a : Molecules[0].inAtoms) {x=a.qx,y=a.qy,z=a.qz; ROTATION(a.qx,a.qy,a.qz,A,B,C,x,y,z);}
-    int is=Molecules[0].inAtoms.size();
-    for(int i=0;i<is-1;i++) {
-        for(int j=i+1;j<is;j++){
-            int flag=0;
-            for (auto &d : dihedrals) {
-                int I=d.atom1;
-                int J=d.atom2;
-                int K=d.atom3;
-                int L=d.atom4;
-                if(i==I){if(j==J||j==K||j==L) flag=1;}
-                if(i==J){if(j==I||j==K||j==L) flag=1;}
-                if(i==K){if(j==J||j==I||j==L) flag=1;}
-                if(i==L){if(j==J||j==K||j==I) flag=1;}
-            }
-            if (flag==0){
-                Pair p;
-                p.i=i;
-                p.j=j;
-                ion_pairs.push_back(p);
-            }
-        }
-    }
 }
 
 void

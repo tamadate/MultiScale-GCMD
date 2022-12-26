@@ -54,28 +54,28 @@ MD::readCondFile(char* condfile){
 			if(readings[1]=="He"){
 				gastype=1;
 				at.mass=4.027;
-				at.name="He";
+				at.name="He(g)";
 				at.coeff1=0.0203;
 				at.coeff2=2.556;
 			}
 			if(readings[1]=="N2"){
 				gastype=2;
 				at.mass=14.01;
-				at.name="N";
+				at.name="N(g)";
 				at.coeff1=0.1098;
 				at.coeff2=3.27351824993;
 			}
 			if(readings[1]=="N2monoatomic"){
 				gastype=3;
 				at.mass=28.02;
-				at.name="N2";
+				at.name="N2(g)";
 				at.coeff1=0.14397;
 				at.coeff2=3.798;
 			}
 			if(readings[1]=="Ar"){
 				gastype=4;
 				at.mass=28.02;
-				at.name="Ar";
+				at.name="Ar(g)";
 				at.coeff1=0.14397;
 				at.coeff2=3.798;
 			}
@@ -233,11 +233,12 @@ MD::readCondFile(char* condfile){
 			cout<<"Gyration --> ON -->\t"<<tmp<<endl;
 		}
 	}
-	d_size=pow(Nof_around_gas*kb*T/p,1/3.0)*1e10;  // Calculation box size
-	V=d_size*d_size*d_size;		// Calculation box volume
+	vars->domainL=pow(Nof_around_gas*kb*T/p,1/3.0)*1e10;  // Calculation box size
+	vars->dcell=vars->domainL/double(vars->cellIndexSize);
+	V=vars->domainL*vars->domainL*vars->domainL;		// Calculation box volume
 	CL2 = (CUTOFF)*(CUTOFF);
 	ML2 = (CUTOFF+MARGIN)*(CUTOFF+MARGIN);
 	cout<<"Cut off length\t\t"<<CUTOFF<<" ang."<<endl;
 	cout<<"Margin length\t\t"<<MARGIN<<" ang."<<endl;
-	cout<<"Domain size\t\t"<<d_size<<" ang."<<endl;
+	cout<<"Domain size\t\t"<<vars->domainL<<" ang."<<endl;
 }

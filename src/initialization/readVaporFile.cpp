@@ -1,6 +1,6 @@
 #include "../variables.hpp"
 
-int
+void
 Variables::readVaporFile(char* infile){
 	ifstream stream(infile);
 	string str;
@@ -31,22 +31,22 @@ Variables::readVaporFile(char* infile){
 				if (loop==1) {
 					if(tmp=="#c"||tmp=="#cs"||tmp=="#c1"||tmp=="#c2"||tmp=="#c3"||tmp=="#ca"
 					||tmp=="#cp"||tmp=="#cq"||tmp=="#cc"||tmp=="#cd"||tmp=="#ce"||tmp=="#cf"
-					||tmp=="#cg" ||tmp=="#ch"||tmp=="#cx"||tmp=="#cy"||tmp=="#cu"||tmp=="#cv"||tmp=="#cz") at.name="C";
+					||tmp=="#cg" ||tmp=="#ch"||tmp=="#cx"||tmp=="#cy"||tmp=="#cu"||tmp=="#cv"||tmp=="#cz") at.name="C(v)";
 					else if(tmp=="#h1"||tmp=="#h2"||tmp=="#h3"||tmp=="#h4"||tmp=="#h5"||tmp=="#ha"
-					||tmp=="#hc"||tmp=="#hn"||tmp=="#ho"||tmp=="#hp"||tmp=="#hs"||tmp=="#hw"||tmp=="#hx") at.name="H";
-					else if(tmp=="f") at.name="F";
-					else if(tmp=="cl") at.name="Cl";
-					else if(tmp=="br") at.name="Br";
-					else if(tmp=="i") at.name="I";
+					||tmp=="#hc"||tmp=="#hn"||tmp=="#ho"||tmp=="#hp"||tmp=="#hs"||tmp=="#hw"||tmp=="#hx") at.name="H(v)";
+					else if(tmp=="f") at.name="F(v)";
+					else if(tmp=="cl") at.name="Cl(v)";
+					else if(tmp=="br") at.name="Br(v)";
+					else if(tmp=="i") at.name="I(v)";
 					else if(tmp=="#n"||tmp=="#n1"||tmp=="#n2"||tmp=="#n3"||tmp=="#n4"||tmp=="#na"
 					||tmp=="#nb"||tmp=="#nc"||tmp=="#nd"||tmp=="#ne"||tmp=="#nf"||tmp=="#nh"
 					||tmp=="#no"||tmp=="#ns"||tmp=="#nt"||tmp=="#nx"||tmp=="#ny"||tmp=="#nz"
-					||tmp=="#n+"||tmp=="#nu"||tmp=="#nv"||tmp=="#n7"||tmp=="#n8"||tmp=="#n9") at.name="N";
+					||tmp=="#n+"||tmp=="#nu"||tmp=="#nv"||tmp=="#n7"||tmp=="#n8"||tmp=="#n9") at.name="N(v)";
 					else if(tmp=="#o"||tmp=="#oh"||tmp=="#os"||tmp=="#ow") at.name="O";
 					else if(tmp=="#p2"||tmp=="#p3"||tmp=="#p4"||tmp=="#p5"||tmp=="#pb"||tmp=="#pc"
 					||tmp=="#pd"||tmp=="#pe"||tmp=="#pf"||tmp=="#px"||tmp=="#py") at.name="P";
 					else if(tmp=="#s"||tmp=="#s2"||tmp=="#s4"||tmp=="#s6"||tmp=="#sh"||tmp=="#ss"
-					||tmp=="#sx"||tmp=="#sy") at.name="S";
+					||tmp=="#sx"||tmp=="#sy") at.name="S(v)";
 					else at.name=tmp;
 				}
 				if (loop==2) at.mass=stod(tmp);
@@ -168,5 +168,4 @@ Variables::readVaporFile(char* infile){
 		}
 	}
 
-  return num_atoms;
 }

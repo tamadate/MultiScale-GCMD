@@ -1,10 +1,7 @@
 #include "potential.hpp"
 
-/////////////////////////////////////////////////////////////////////
-/*
-	- Calculate force working on gas-gas (LJ)
-*/
-/////////////////////////////////////////////////////////////////////
+//	Force from electric field
+
 void
 PotentialEfield::compute(Variables *vars, FLAG *flags) {
     for (auto &a : vars->Molecules[0].inAtoms) {

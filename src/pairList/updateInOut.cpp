@@ -1,6 +1,5 @@
 #include "../md.hpp"
 
-
 //------------------------------------------------------------//
 /*	Make update regions  */
 //------------------------------------------------------------//
@@ -11,7 +10,6 @@ MD::updateInOut(void){
 		double dx = mols[i].qx - mols[0].qx;
 		double dy = mols[i].qy - mols[0].qy;
 		double dz = mols[i].qz - mols[0].qz;
-		double r2 = (dx * dx + dy * dy + dz * dz);
 		double dr2=dx*dx+dy*dy+dz*dz;
 		int oriFlag=vars->Region[i];
 		if(dr2<RO2) vars->Region[i]=AA;
@@ -27,7 +25,6 @@ MD::updateInOut(void){
 		double dx = mols[i].qx - mols[0].qx;
 		double dy = mols[i].qy - mols[0].qy;
 		double dz = mols[i].qz - mols[0].qz;
-		double r2 = (dx * dx + dy * dy + dz * dz);
 		double dr2=dx*dx+dy*dy+dz*dz;
 		int oriFlag=vars->Region[i];
 		if(dr2<RO2) vars->Region[i]=AA;

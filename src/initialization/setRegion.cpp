@@ -5,6 +5,9 @@ MD::setRegion(void) {
   Molecule *mols=vars->Molecules.data();
   int Nmol=vars->Molecules.size();
   vars->Region.resize(Nmol);
+  // center particle is always AA
+  vars->Region[0]=AA;
+  // set gas molecule region
   for (auto i : vars->MolID[1]){
     double dx=mols[i].qx-mols[0].qx;
     double dy=mols[i].qy-mols[0].qy;
@@ -22,7 +25,7 @@ MD::setRegion(void) {
 			else vars->Region[i]=CG;
 		}
   }
-
+  // set vapor molecule region
   for (auto i : vars->MolID[2]){
     double dx=mols[i].qx-mols[0].qx;
     double dy=mols[i].qy-mols[0].qy;

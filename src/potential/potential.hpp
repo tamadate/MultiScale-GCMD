@@ -6,51 +6,46 @@
 
 class PotentialLJ : public Potential {
 	private:
-		string potName="LJ gas-ion";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialLJ(){};
+		PotentialLJ(){potName="LJ(gas-ion)";};
 		~PotentialLJ(){};
 };
 
 class PotentialLJCoulHybrid : public Potential {
 	private:
-		string potName="LJ vapor-vapor";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialLJCoulHybrid(){};
+		PotentialLJCoulHybrid(){potName="LJ+Coulombic-AA/CG(vapor-vapor)";};
 		~PotentialLJCoulHybrid(){};
 };
 
 class PotentialLJHybrid : public Potential {
 	private:
-		string potName="LJ vapor-gas";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialLJHybrid(){};
+		PotentialLJHybrid(){potName="LJ-AA/CG(gas-gas, gas-vapor)";};
 		~PotentialLJHybrid(){};
 };
 
 class PotentialLJCoul : public Potential {
 	private:
-		string potName="LJ vapor-ion";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialLJCoul(){};
+		PotentialLJCoul(){potName="LJ+Coulombic(vapor-ion)";};
 		~PotentialLJCoul(){};
 };
 
 class PotentialGasGas : public Potential {
 	private:
-		string potName="LJ gas-gas";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialGasGas(){};
+		PotentialGasGas(){potName="LJ gas-gas";};
 		~PotentialGasGas(){};
 };
 
@@ -58,53 +53,48 @@ class PotentialGasGas : public Potential {
 
 class PotentialGasIntra : public Potential {
 	private:
-		string potName="Gas intra";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialGasIntra(){};
+		PotentialGasIntra(){potName="Gas intra";};
 		~PotentialGasIntra(){};
 };
 
 class PotentialBorn : public Potential {
 	private:
-		string potName="Ion BMH";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialBorn(){};
+		PotentialBorn(){potName="Ion BMH";};
 		~PotentialBorn(){};
 };
 
 class PotentialEfield : public Potential {
 	private:
-		string potName="Ion E-filed";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		double Ecoeff[3];
 		void compute(Variables *vars, FLAG *flags);
-		PotentialEfield(){};
+		PotentialEfield(){potName="Ion E-filed";};
 		~PotentialEfield(){};
 };
 
 class PotentialIonDipole : public Potential {
 	private:
-		string potName="Induced dipole ion-gas";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		double alphagas;
 		double zion;
 		void compute(Variables *vars, FLAG *flags);
-		PotentialIonDipole(){};
+		PotentialIonDipole(){potName="Induced dipole ion-gas";};
 		~PotentialIonDipole(){};
 };
 
 class PotentialVaporIntra : public Potential {
 	private:
-		string potName="AMBER vapor";
 	public:
 		void printName(void) {cout<<potName<<endl;}
 		void compute(Variables *vars, FLAG *flags);
-		PotentialVaporIntra(){};
+		PotentialVaporIntra(){potName="AMBER vapor";};
 		~PotentialVaporIntra(){};
 };

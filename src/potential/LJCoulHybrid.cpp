@@ -16,6 +16,7 @@ PotentialLJCoulHybrid::compute(Variables *vars, FLAG *flags) {
 			double dx = mols[i].qx - mols[j].qx;
 			double dy = mols[i].qy - mols[j].qy;
 			double dz = mols[i].qz - mols[j].qz;
+			adjust_periodic(dx, dy, dz, vars->domainL);
 			double rsq = (dx * dx + dy * dy + dz * dz);
 			double r2inv = 1/rsq;
 			double r6inv = r2inv * r2inv * r2inv;
@@ -39,6 +40,7 @@ PotentialLJCoulHybrid::compute(Variables *vars, FLAG *flags) {
 					double dx = av2.qx - av1.qx;
 					double dy = av2.qy - av1.qy;
 					double dz = av2.qz - av1.qz;
+					adjust_periodic(dx, dy, dz, vars->domainL);
 					double rsq = (dx * dx + dy * dy + dz * dz);
 					double r2inv = 1/rsq;
 					double r6inv = r2inv * r2inv * r2inv;

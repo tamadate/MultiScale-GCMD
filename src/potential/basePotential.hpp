@@ -4,8 +4,8 @@
 //------------------------------------------------------------------------
 class Potential {
 	private:
-		string potName="potential";
 	public:
+		string potName="potential";
 		virtual void printName(void) {cout<<potName<<endl;}
 		virtual void compute(Variables *vars, FLAG *flags);
 		Potential(){};
