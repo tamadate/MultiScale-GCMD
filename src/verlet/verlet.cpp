@@ -18,12 +18,13 @@
 /////////////////////////////////////////////////////////////////////
 void
 MD::verlet(void) {
+	thermo->loop++;
+	thermo->Tcontrol(0);
 	velocity_calculation(); //	v(t) -> v(t+dt/2) using F(x(t))
 	//if(flags->velocity_scaling==1)	velocity_scaling();
-
 	update_position();
 
-	if(flags->nose_hoover_ion==1)	nosehoover_zeta();
+	thermo->NH_zeta();
 	check_pairlist();
 	vars->totalVirial=0;
 	for (auto &inter : InterInter) inter->compute(vars,flags);
@@ -32,7 +33,7 @@ MD::verlet(void) {
 
 	velocity_calculation();	//	v(t+dt/2) -> v(t+dt) using F(x(t+dt))
 
-	if(flags->nose_hoover_ion==1)	nosehoover_ion();
-	//(flags->nose_hoover_gas==1)	nosehoover_gas();
+	//if(flags->nose_hoover_ion==1)	nosehoover_ion();
+	thermo->Tcontrol(1);
 	flags->eflag=0;
 }

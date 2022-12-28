@@ -19,3 +19,19 @@ MD:: updateInCenters(void){
 		}
 	}
 }
+
+void
+MD:: updateIonCenter(void){
+	Molecule *mols = vars->Molecules.data();
+	mols[0].qx=mols[0].qy=mols[0].qz=0;
+	mols[0].px=mols[0].py=mols[0].pz=0;
+	for (auto &c : mols[0].inAtoms){
+		double massRatio=c.mass/mols[0].mass;
+		mols[0].qx += c.qx*massRatio;
+		mols[0].qy += c.qy*massRatio;
+		mols[0].qz += c.qz*massRatio;
+		mols[0].px += c.px*massRatio;
+		mols[0].py += c.py*massRatio;
+		mols[0].pz += c.pz*massRatio;
+	}
+}

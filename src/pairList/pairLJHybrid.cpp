@@ -49,7 +49,7 @@ MD::make_pairLJHybrid(void){
 		}
 	}
 
-	make_pairLJHybridTest();
+	//make_pairLJHybridTest();
 }
 
 void
@@ -69,7 +69,7 @@ MD::make_pairLJHybridSelf(int i, int j, int k){
 					Pair p;
 					p.i=I;
 					p.j=J;
-					vars->pairsLJHybridTest.push_back(p);
+					vars->pairsLJHybrid.push_back(p);
 				}
 			}
 		}
@@ -96,7 +96,7 @@ MD::make_pairLJHybridSub(int i1, int j1,int k1, int i2,int j2, int k2){
 				Pair p;
 				p.i=I;
 				p.j=J;
-				vars->pairsLJHybridTest.push_back(p);
+				vars->pairsLJHybrid.push_back(p);
 			}
 		}
 	}
@@ -144,16 +144,19 @@ MD::make_pairLJHybridTest(void){
 		}
 	}
 
+	if(vars->pairsLJHybrid.size()!=vars->pairsLJHybridTest.size()){
+		cout<<"pair list error"<<endl;
+	}
 	for(auto &p1 : vars->pairsLJHybrid){
+		int i=p1.i;
+		int j=p1.j;
+		if(p1.i>p1.j) {
+			i=p1.j;
+			j=p1.i;
+		}
 		int flag=0;
 		for(auto &p2 : vars->pairsLJHybridTest){
-			int i=p2.i;
-			int j=p2.j;
-			if(p2.i>p2.j) {
-				i=p2.j;
-				j=p2.i;
-			}
-			if(p1.i==i&&p1.j==j){
+			if(p2.i==i&&p2.j==j){
 				flag=1;
 				break;
 			}
@@ -176,5 +179,6 @@ MD::make_pairLJHybridTest(void){
 			int iy2=int(dy*dcellInv);
 			int iz2=int(dz*dcellInv);
 		}
+		
 	}
 }

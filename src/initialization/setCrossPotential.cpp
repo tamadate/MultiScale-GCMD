@@ -22,8 +22,8 @@ Variables::setCrossPotentials(void){
 
   double epu11=0.14397; // gas CG potential
   double sigma11=3.798; // gas CG potential
-  double epu22=0.14397; // vapor CG potential
-  double sigma22=3.798; // vapor CG potential
+  double epu22=0.1521; // vapor CG potential
+  double sigma22=3.15061; // vapor CG potential
   double epu12=sqrt(epu11*epu22);
   double sigma12=(sigma11+sigma11)*0.5;
   pair_coeff_CG[1][1][0]= 48 * epu11*pow(sigma11,12.0);

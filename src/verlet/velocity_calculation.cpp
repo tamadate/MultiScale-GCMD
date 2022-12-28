@@ -14,8 +14,8 @@ MD::velocity_calculation(void) {
 			mol.py += mol.fy *Coeff2;
 			mol.pz += mol.fz *Coeff2;
 			const int th=1;
-			if(mol.px*mol.px>th || mol.py*mol.py>th || mol.pz*mol.pz>th) {
-				double xx=0;
+			if(mol.px*mol.px+mol.py*mol.py+mol.pz*mol.pz>th) {
+								double xx=0;
 			}
 		}
 		else{
@@ -25,7 +25,7 @@ MD::velocity_calculation(void) {
 				a.py += a.fy *Coeff2;
 				a.pz += a.fz *Coeff2;
 				const int th=10;
-				if(a.px*a.px>th || a.py*a.py>th || a.pz*a.pz>th){
+				if(a.px*a.px+a.py*a.py+a.pz*a.pz>th){
 					double xx=0;
 				}
 			}

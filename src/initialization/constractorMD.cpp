@@ -30,6 +30,8 @@ MD::MD(char* condfile, int calcNumber) {
 	totalVaporIn=1;
 
 	setCondition(condfile);
+	//thermo = new NoseHoover(vars,obs,dt,T,10000);
+	thermo = new velocityScaling(vars,obs,T);
 	output_initial();	
 	read_initial();	// Read initial ion structure and vapor structure
 	vars->ionInitialVelocity(T);

@@ -10,6 +10,8 @@ MD::boundary_scaling_gas_move(void){
 	int flag, flagx, flagy, flagz;
 	double vMB, vxMB, vyMB, vzMB, vx, vy, vz, v2, v, mod_factor;
 	Molecule *mols = vars -> Molecules.data();
+	double V2=mols[0].px*mols[0].px+mols[0].py*mols[0].py+mols[0].pz*mols[0].pz;
+	double V=sqrt(V2);
 
 	for (auto i : vars->MolID[1]){
 		flag=flagx=flagy=flagz=0;
@@ -25,7 +27,7 @@ MD::boundary_scaling_gas_move(void){
 		if (dx > HL) mols[i].qx -= vars->domainL, flagx++, flag++;
 		if (dy > HL) mols[i].qy -= vars->domainL, flagy++, flag++;
 		if (dz > HL) mols[i].qz -= vars->domainL, flagz++, flag++;
-		if (flag>0) {
+		/*if (flag>0) {
 			if(mbdist->number>mbdist->vflux.size()*0.9) {mbdist->makeWeightedMB(pp->cgas,pp->mgas,T);}
 			vx = mols[i].px;
 			vy = mols[i].py;
@@ -38,7 +40,7 @@ MD::boundary_scaling_gas_move(void){
 			mols[i].py = vy * mod_factor;
 			mols[i].pz = vz * mod_factor;
 			mbdist->number++;
-		}
+		}*/
 	}
 }
 
@@ -63,7 +65,7 @@ MD::boundary_scaling_vapor_move(void){
 		if (dx > HL) mols[i].qx -= vars->domainL, flagx++, flag++;
 		if (dy > HL) mols[i].qy -= vars->domainL, flagy++, flag++;
 		if (dz > HL) mols[i].qz -= vars->domainL, flagz++, flag++;
-		if (flag>0) {
+		/*if (flag>0) {
 			if(mbdistV->number>mbdistV->vflux.size()*0.9) {mbdistV->makeWeightedMB(pp->cvapor,pp->mvapor,T);}
 			vx=mols[i].px;
 			vy=mols[i].py;
@@ -76,6 +78,6 @@ MD::boundary_scaling_vapor_move(void){
 			mols[i].py = vy * mod_factor;
 			mols[i].pz = vz * mod_factor;
 			mbdistV->number++;
-		}
+		}*/
 	}
 }

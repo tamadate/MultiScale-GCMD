@@ -6,6 +6,7 @@ MD::update_position(void) {
 	vars->times.tpos-=omp_get_wtime();
     int Nmol=vars->Molecules.size();
     Molecule *mols = vars -> Molecules.data();
+
 	for (int i=0;i<Nmol;i++){
 		if(vars->Region[i]==CG){
 			mols[i].qx += mols[i].px * dt;
@@ -22,7 +23,6 @@ MD::update_position(void) {
 		}
 		mols[i].fx=mols[i].fy=mols[i].fz=0.0;
 	}
-	//boundary_scaling_ion_move();
 	updateInCenters();
 	boundary_scaling_gas_move();
 	boundary_scaling_vapor_move();

@@ -39,7 +39,7 @@ const double SN2=107, TrefN2=273.0, myuN2=1.663e-5; // REF
 //------------------------------------------------------------------------
 
 /*******************Coeff.************************/
-const double Rinter=100;	   // boundary of AA and CG models
+const double Rinter=200;	   // boundary of AA and CG models
 const double BoundL=10;     // Thickness of overlapping region
 const double BoundMergin=10;   // Mergin of overlapping region
 const double RAA=Rinter+BoundL;   // Mergin of overlapping region

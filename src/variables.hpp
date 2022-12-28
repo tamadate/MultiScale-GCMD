@@ -17,7 +17,6 @@ public:
 
 	double time;
 	double zeta_ion;
-	double zeta_gas;
 	double domainL;
 
 	Potentials Utotal;

@@ -22,7 +22,7 @@ This makes connection between thermal relaxation and main diffusion coeficient c
 void
 MD::initialization_gas(void) {
 	double dx,dy,dz, d;
-	double dis=10;	/*	minimum gas-gas, gas-ion distance */
+	double dis=15;	/*	minimum gas-gas, gas-ion distance */
 	int Nsofar=vars->Molecules.size();
 
 	// Maxwell-Boltzumann distribution generator
@@ -58,7 +58,7 @@ MD::initialization_gas(void) {
 			else{
 				double dx=a.qx-b.qx;
 				double dy=a.qy-b.qy;
-				double dz=a.qx-b.qz;
+				double dz=a.qz-b.qz;
 				adjust_periodic(dx, dy, dz, vars->domainL);
 				double d=sqrt(dx*dx+dy*dy+dz*dz);
 				if(d<min_dis) min_dis=d; // minimum gas-gas distance

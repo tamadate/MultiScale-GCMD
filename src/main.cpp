@@ -12,6 +12,7 @@
 */
 /////////////////////////////////////////////////////////////////////
 
+
 int main ( int argc,char *argv[] ) {
 	if(argc==3){
 		MD *md=new MD(argv[1],stoi(argv[2]));

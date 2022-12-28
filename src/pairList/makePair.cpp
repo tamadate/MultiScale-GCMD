@@ -30,6 +30,6 @@ MD::make_pair(void){
 	//if (vmax2<vion2) vmax2=vion2;
 	double vmax = sqrt(vmax2);
 
-	loop_update=margin_length/(vmax*dt)*0.5;
+	loop_update=margin_length/(vmax*dt)*0.5*0.8;
 	loop=0;
 }
