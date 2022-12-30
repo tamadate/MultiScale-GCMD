@@ -28,7 +28,7 @@ const double kb_real = kb*Nw/4184.0;     /* boltzmann constant with real unit kc
 const double e0 = 8.85e-12;     /* permittivity of vacuum */
 const double e = 1.602e-19;     /* elementary charge */
 
-const double MN2=28.0, MHe=4.0026, MAr=39.948;
+const double MN2=28.02, MHe=4.0026, MAr=39.948;
 const double MMeOH=32.0, MH2O=18.0, MEtOH=46.0;
 const double mN2=MN2/Nw/1000.0;
 const double myuHe=1.47e-5;

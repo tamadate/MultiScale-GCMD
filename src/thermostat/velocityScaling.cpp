@@ -1,11 +1,10 @@
-
 #include "thermostat.hpp"
 
 void
 velocityScaling::Tcontrol(int LOOP) {
 	if(interval==loop){
-		obs->computeProps(vars,1);
-		double Coeff=sqrt(T/obs->Tout[1]);
+		computeTnow();
+		double Coeff=sqrt(T/Tnow);
 		for (int j=1;j<3;j++){
 			for (auto i : vars->MolID[j]) {
 				if(vars->Region[i]==CG){

@@ -59,6 +59,9 @@ PotentialGasIntra::compute(Variables *vars, FLAG *flags){
 		double dr= r - 1.098;
 		double rk = 1221.7 * dr;
 		double force_bond_harmonic = -2.0*rk/r;
+		if(force_bond_harmonic>100) {
+			double xx=0;
+		}
 		mols[i].inAtoms[0].fx += force_bond_harmonic * dx;
 		mols[i].inAtoms[0].fy += force_bond_harmonic * dy;
 		mols[i].inAtoms[0].fz += force_bond_harmonic * dz;

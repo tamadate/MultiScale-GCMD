@@ -3,30 +3,30 @@
 //------------------------------------------------------------------------
 void
 Observer::computeProps(Variables *vars,int molID){
+	Molecule *mols = vars -> Molecules.data();
 	Kin[molID]=0;
 	double Nin=0;
-	Molecule *mols = vars -> Molecules.data();
-
-	for(auto i : vars->MolID[molID]){
-		for (auto &at : mols[i].inAtoms){
-			Kin[molID] += at.px * at.px * at.mass;
-			Kin[molID] += at.py * at.py * at.mass;
-			Kin[molID] += at.pz * at.pz * at.mass;
-			Nin++;
-		}
-	}
-	Kin[molID]*= (0.5 * real_to_kcalmol);
-	Tin[molID]=Kin[molID]/double(Nin)*coeff;
-
 	Kout[molID]=0;
 	double Nout=0;
 
 	for(auto i : vars->MolID[molID]){
-		Kout[molID] += mols[i].px * mols[i].px * mols[i].mass;
-		Kout[molID] += mols[i].py * mols[i].py * mols[i].mass;
-		Kout[molID] += mols[i].pz * mols[i].pz * mols[i].mass;
-		Nout++;
+		if(vars->Region[i]==CG){
+			Kout[molID] += mols[i].px * mols[i].px * mols[i].mass;
+			Kout[molID] += mols[i].py * mols[i].py * mols[i].mass;
+			Kout[molID] += mols[i].pz * mols[i].pz * mols[i].mass;
+			Nout++;
+		}
+		else{
+			for (auto &at : mols[i].inAtoms){
+				Kin[molID] += at.px * at.px * at.mass;
+				Kin[molID] += at.py * at.py * at.mass;
+				Kin[molID] += at.pz * at.pz * at.mass;
+				Nin++;
+			}
+		}
 	}
+	Kin[molID]*= (0.5 * real_to_kcalmol);
+	Tin[molID]=Kin[molID]/double(Nin)*coeff;
 	Kout[molID]*= (0.5 * real_to_kcalmol);
 	Tout[molID]=Kout[molID]/double(Nout)*coeff;
 

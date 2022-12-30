@@ -5,13 +5,14 @@
 //------------------------------------------------------------//
 void
 MD::make_pairsLJCoulHybrid(void){
-	vars->pairsLJCoulHybrid.clear();
 	Molecule *mols=vars->Molecules.data();
 
 	// make gas-gas pair list
 	int vs=vars->MolID[2].size();
-	for (int i=0; i<vs-1; i++){
-		for (int j=i+1; j<vs; j++){
+	for (int I=0; I<vs-1; I++){
+		int i=vars->MolID[2][I];
+		for (int J=I+1; J<vs; J++){
+			int j=vars->MolID[2][J];
 			double dx = mols[i].qx - mols[j].qx;
 			double dy = mols[i].qy - mols[j].qy;
 			double dz = mols[i].qz - mols[j].qz;

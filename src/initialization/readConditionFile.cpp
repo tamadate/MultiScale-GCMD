@@ -192,7 +192,7 @@ MD::readCondFile(char* condfile){
 			if (readings[2]=="AMBER") flags->intra_AMBER=1;
 			else if (readings[2]=="Stilinger-Weber") flags->force_sw=1;
 			else if (readings[2]=="Tersoff") flags->force_ters=1;
-			else if (readings[2]=="Born-Mayer-Huggins-NaCl") flags->force_born=1;
+			else if (readings[2]=="BMH") flags->force_born=1;
 			else printf("**************Uknown ion parameter was found**************\n");
 		}
 		// Vapor-Ion interaction

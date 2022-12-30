@@ -21,8 +21,8 @@ MD::MD(char* condfile, int calcNumber) {
 
 	// Default calculation parameters
 	dt = 0.5;	/*	fs	*/
-	CUTOFF = 20.0;	/*	A	*/
-	MARGIN = 10.0;	/*	A	*/
+	CUTOFF = 15.0;	/*	A	*/
+	MARGIN = 5.0;	/*	A	*/
 	OBSERVE=10000000;
 	T=300;
 	p=1e5;

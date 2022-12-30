@@ -25,7 +25,7 @@ MD::setPotential(FLAG *flags,int mode){
 		flag=1;
 	}
 	if(flags->force_born) {
-		IntraInter.push_back(new PotentialBorn());
+		IntraInter.push_back(new PotentialBorn(vars));
 		cout<<"ion\t|\tBMH\t";
 		flag=1;
 	}

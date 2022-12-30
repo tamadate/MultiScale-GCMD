@@ -13,6 +13,10 @@ void
 MD::make_pair(void){
 	updateInOut();
 	vars->setCellIndex(vars->domainL*0.5);
+	vars->pairsLJ.clear();
+	vars->pairsLJCoul.clear();
+	vars->pairsLJHybrid.clear();
+	vars->pairsLJCoulHybrid.clear();
 	make_pairLJ();
  	make_pairLJCoul();
 	make_pairLJHybrid();
@@ -30,6 +34,6 @@ MD::make_pair(void){
 	//if (vmax2<vion2) vmax2=vion2;
 	double vmax = sqrt(vmax2);
 
-	loop_update=margin_length/(vmax*dt)*0.5*0.8;
+	loop_update=margin_length/(vmax*dt)*0.5;
 	loop=0;
 }

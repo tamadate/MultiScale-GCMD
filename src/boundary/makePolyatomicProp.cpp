@@ -6,7 +6,7 @@ void
 MD::makeDiatomicProp_in(Molecule &gasOut){
 	random_device seed;
 	mt19937 mt(seed());
-	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas)*0.90);
+	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
 	uniform_real_distribution<double> r(0,1);
 	std::vector<Atom> at=vars->atomGas(gastype);
 	gasOut.mass=pp->Mgas;

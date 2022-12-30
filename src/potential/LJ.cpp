@@ -31,6 +31,9 @@ PotentialLJ::compute(Variables *vars, FLAG *flags) {
 			ions[j].fx -= force_pair * dx;
 			ions[j].fy -= force_pair * dy;
 			ions[j].fz -= force_pair * dz;
+			if(force_pair>100) {
+				double xx=0;
+			}
 			if(flags->eflag) {
 				vars->Utotal.Ugi+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0);
 			}

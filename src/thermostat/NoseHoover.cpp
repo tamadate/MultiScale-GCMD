@@ -25,12 +25,12 @@ MD::nosehoover_ion(void){
 void
 NoseHoover::NH_zeta(void){
 	if(interval==loop){
-		obs->computeProps(vars,1);
+		computeTnow();
 		int g=1;
 		for(auto i : vars->MolID[1]) if(vars->Region[i]==CG) g++;
 		for(auto i : vars->MolID[2]) if(vars->Region[i]==CG) g++;
 		g*=3;
-		zeta += (obs->Tout[1] - T)*g*kb_real*Q_inv*dt;
+		zeta += (Tnow - T)*g*kb_real*Q_inv*dt;
 	}
 }
 
@@ -58,3 +58,5 @@ MD::setNVTion(double temp){
 	flags->nose_hoover_gas=0;
 	pp->Tnh_ion=temp;
 }
+
+

@@ -6,7 +6,6 @@
 //------------------------------------------------------------//
 void
 MD::make_pairLJHybrid(void){
-	vars->pairsLJHybrid.clear();
 	Molecule *mols=vars->Molecules.data();
 	// make gas-vapor pair list
 	for (auto i : vars->MolID[1]){

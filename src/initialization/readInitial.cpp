@@ -16,7 +16,6 @@ MD::read_initial(void) {
   
   vars->readIonFile(atomFile);
   vars->readVaporFile(vaporFile);
-  vars->setBMHPotential();
   vars->setCrossPotentials(); // LJ potential parameters (BL rule)
   vars->ionRotation();
 }

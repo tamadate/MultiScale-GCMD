@@ -24,6 +24,9 @@ PotentialLJCoulHybrid::compute(Variables *vars, FLAG *flags) {
 			int type2=mols[j].type;
 			double force_lj = r6inv * (vars->pair_coeff_CG[type1][type2][0] * r6inv - vars->pair_coeff_CG[type1][type2][1]);
 			double force_pair = force_lj*r2inv*(1-w);
+			if(force_pair>100) {
+						double xx=0;
+			}
 			mols[i].fx += force_pair * dx;
 			mols[i].fy += force_pair * dy;
 			mols[i].fz += force_pair * dz;
@@ -49,6 +52,9 @@ PotentialLJCoulHybrid::compute(Variables *vars, FLAG *flags) {
 					double force_lj = r6inv * (vars->pair_coeff[type1][type2][0] * r6inv - vars->pair_coeff[type1][type2][1]);
 					double force_coul = qqrd2e * av1.charge * av2.charge * sqrt(r2inv);
 					double force_pair = (force_lj + force_coul)*r2inv*w;
+					if(force_pair>100) {
+						double xx=0;
+					}
 					av2.fx += force_pair * dx;
 					av2.fy += force_pair * dy;
 					av2.fz += force_pair * dz;

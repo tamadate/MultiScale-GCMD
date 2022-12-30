@@ -10,6 +10,8 @@ class Thermostat {
 		double T;
 		double loop;
 		double interval;
+		double Tnow;
+		void computeTnow(void);
 		virtual void NH_zeta(void){};
 		virtual void Tcontrol(int LOOP){};
 		Thermostat(void){};
