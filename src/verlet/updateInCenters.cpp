@@ -1,22 +1,28 @@
 #include "../md.hpp"
 
 void
-MD:: updateInCenters(void){
+MD:: updateInCenters(Molecule &mol){
+	//Molecule *mols = vars->Molecules.data();
+	mol.qx=mol.qy=mol.qz=0;
+	mol.px=mol.py=mol.pz=0;
+	for (auto &c : mol.inAtoms){
+		double massRatio=c.mass/mol.mass;
+		mol.qx += c.qx*massRatio;
+		mol.qy += c.qy*massRatio;
+		mol.qz += c.qz*massRatio;
+		mol.px += c.px*massRatio;
+		mol.py += c.py*massRatio;
+		mol.pz += c.pz*massRatio;
+	}
+}
+
+void
+MD:: updateInCentersAll(void){
 	Molecule *mols = vars->Molecules.data();
 	int Nmol=vars->Molecules.size();
 	for (int i=0;i<Nmol;++i){
 		if(vars->Region[i]==CG) continue;
-		mols[i].qx=mols[i].qy=mols[i].qz=0;
-		mols[i].px=mols[i].py=mols[i].pz=0;
-		for (auto &c : mols[i].inAtoms){
-			double massRatio=c.mass/mols[i].mass;
-			mols[i].qx += c.qx*massRatio;
-			mols[i].qy += c.qy*massRatio;
-			mols[i].qz += c.qz*massRatio;
-			mols[i].px += c.px*massRatio;
-			mols[i].py += c.py*massRatio;
-			mols[i].pz += c.pz*massRatio;
-		}
+		updateInCenters(mols[i]);
 	}
 }
 

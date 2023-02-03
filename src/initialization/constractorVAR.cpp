@@ -10,7 +10,7 @@ Variables::Variables(void) {
 
 void
 Variables::initialCellIndex(void){
-  cellIndexSize=10;
+  cellIndexSize=5;
   cellIndex.resize(cellIndexSize);
   for(auto &a : cellIndex) {
     a.resize(cellIndexSize);

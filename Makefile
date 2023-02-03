@@ -1,4 +1,4 @@
-NAME        = test/a.out
+NAME        = MD.out
 SRCS        = ./src/*cpp ./src/*/*cpp ./src/*/*/*cpp
 OBJS        = $(SRCS:.cpp=.o)
 CXX         = g++

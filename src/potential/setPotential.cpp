@@ -34,7 +34,7 @@ MD::setPotential(FLAG *flags,int mode){
 
 //ion-gas
 	flag=0;
-	if(flags->force_lj && mode) {
+	if(flags->force_lj) {
 		InterInter.push_back(new PotentialLJ());
 		cout<<"|\tL-J\t";
 		flag=1;
@@ -43,7 +43,7 @@ MD::setPotential(FLAG *flags,int mode){
 
 //ion-vapor
 	flag=0;
-	if(flags->inter_vi && mode) {
+	if(flags->inter_vi) {
 		InterInter.push_back(new PotentialLJCoul());
 		cout<<"|\tL-J-C\t|"<<endl;
 		flag=1;
@@ -55,7 +55,7 @@ MD::setPotential(FLAG *flags,int mode){
 
 //gas-vapor
 	flag=0;
-	if(flags->inter_vg && mode) {
+	if(flags->inter_vg) {
 		InterInter.push_back(new PotentialLJHybrid());
 		cout<<"|\tL-J\t|"<<endl;
 		flag=1;
@@ -69,7 +69,7 @@ MD::setPotential(FLAG *flags,int mode){
 
 //vapor-vapor
 	flag=0;
-	if(flags->inter_vv && mode) {
+	if(flags->inter_vv) {
 		InterInter.push_back(new PotentialLJCoulHybrid());
 		cout<<"|\tL-J-C\t|"<<endl;
 		flag=1;
@@ -91,8 +91,8 @@ MD::setPotential(FLAG *flags,int mode){
 		InterInter.push_back(new PotentialIonDipole());
 		cout<<"gas-ion inter -->\tIon induced"<<endl;
 	}
-	if(flags->efield) {
-		InterInter.push_back(new PotentialEfield());
+	if(flags->efield && mode) {
+		InterInter.push_back(new PotentialEfield(Ecoeff[0],Ecoeff[1],Ecoeff[2]));
 		cout<<"Efield -->\tON"<<endl;
 	}
 

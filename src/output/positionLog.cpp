@@ -2,7 +2,7 @@
 
 void
 MD::positionLog(void){
-	updateInCenters();
+	updateInCentersAll();
  	Molecule *mols=vars->Molecules.data();
 	Atom *ion=vars->Molecules[0].inAtoms.data();
 	int i=0;

@@ -11,7 +11,15 @@
 /////////////////////////////////////////////////////////////////////
 void
 MD::make_pair(void){
+	boundary_scaling_gas_move();
+	boundary_scaling_vapor_move();
+	pre_ion[0]=vars->Molecules[0].qx;
+	pre_ion[1]=vars->Molecules[0].qy;
+	pre_ion[2]=vars->Molecules[0].qz;
+	boundary_scaling_ion_move();
+
 	updateInOut();
+
 	vars->setCellIndex(vars->domainL*0.5);
 	vars->pairsLJ.clear();
 	vars->pairsLJCoul.clear();
@@ -34,6 +42,6 @@ MD::make_pair(void){
 	//if (vmax2<vion2) vmax2=vion2;
 	double vmax = sqrt(vmax2);
 
-	loop_update=margin_length/(vmax*dt)*0.5;
+	loop_update=MARGIN/(vmax*dt)*0.5;
 	loop=0;
 }

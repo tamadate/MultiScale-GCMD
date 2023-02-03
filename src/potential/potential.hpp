@@ -68,7 +68,12 @@ class PotentialEfield : public Potential {
 		void printName(void) {cout<<potName<<endl;}
 		double Ecoeff[3];
 		void compute(Variables *vars, FLAG *flags);
-		PotentialEfield(){potName="Ion E-filed";};
+		PotentialEfield(double Ex, double Ey, double Ez){
+			Ecoeff[0]=Ex;
+			Ecoeff[1]=Ey;
+			Ecoeff[2]=Ez;
+			potName="Ion E-filed";
+		};
 		~PotentialEfield(){};
 };
 

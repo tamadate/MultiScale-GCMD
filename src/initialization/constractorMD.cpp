@@ -46,13 +46,10 @@ MD::MD(char* condfile, int calcNumber) {
 	initialization_gas();	//Set initial positions & velocities for gas
  	initialization_vapor();	//Set initial positions & velocities for vapor
 	setRegion();
-	updateInCenters();
+	updateInCentersAll();
 	boundary_scaling_ion_move();
-	make_pair();
-	margin_length = MARGIN;
-	vars->tzero();
-
 	mbdist -> makeWeightedMB(pp->cgas,pp->mgas,T);
 	mbdistV -> makeWeightedMB(pp->cvapor,pp->mvapor,T);
-
+	make_pair();
+	vars->tzero();
 }

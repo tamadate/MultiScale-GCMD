@@ -57,7 +57,8 @@ class MD {
 		Thermostat *thermo;
 
 	//	General functions
-		void updateInCenters(void);
+		void updateInCenters(Molecule &mol);
+		void updateInCentersAll(void);
 
 	//	velocity verlet
 		void run(char** argv);
@@ -83,7 +84,6 @@ class MD {
 		void check_pairlist(void);
 		void makeDiatomicProp_in(Molecule &gasOut);
 		void makePolyatomicProp_in(Molecule &vapOut);
-		double margin_length;
 		void make_pairLJHybridSub(int i1, int j1,int k1, int i2,int j2, int k2);
 		void make_pairLJHybridSelf(int i, int j, int k);
 

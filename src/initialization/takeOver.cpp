@@ -60,5 +60,5 @@ MD::takeOver(void) {
 		}
 		loop++;
 	}
-	updateInCenters();
+	updateInCentersAll();
 }
