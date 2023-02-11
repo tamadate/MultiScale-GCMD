@@ -2,19 +2,16 @@
 
 void
 Thermostat::computeTnow(void){
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *v=vars->velocity.data();
+	double *m=vars->mass.data();
+	int Natom=vars->position.size();
 	double K=0;
-	double Nout=0;
-	int Nmol=vars->Molecules.size();
-	Molecule *mols=vars->Molecules.data();
-
-	for(int i=1; i<Nmol; i++){
-		if(vars->Region[i]==CG){
-			K += mols[i].px * mols[i].px * mols[i].mass;
-			K += mols[i].py * mols[i].py * mols[i].mass;
-			K += mols[i].pz * mols[i].pz * mols[i].mass;
-			Nout++;
-		}
+	for(int i=1; i<Natom; i++){
+		K += v[i][0] * v[i][0] * m[i];
+		K += v[i][1] * v[i][1] * m[i];
+		K += v[i][2] * v[i][2] * m[i];
 	}
 	K*= (0.5 * real_to_kcalmol);
-	Tnow=K/double(Nout)*kb_real_inv/1.5;
+	Tnow=K/double(Natom)*kb_real_inv/1.5;
 };

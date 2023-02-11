@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <array>
 
 #include "struct.hpp"
 #include "flags.hpp"

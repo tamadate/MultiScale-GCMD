@@ -30,7 +30,6 @@ MD::verlet(void) {
 	vars->totalVirial=0;
 	for (auto &inter : InterInter) inter->compute(vars,flags);
 	for (auto &intra : IntraInter) intra->compute(vars,flags);
-	AACG_totalForce();
 
 	velocity_calculation();	//	v(t+dt/2) -> v(t+dt) using F(x(t+dt))
 

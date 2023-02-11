@@ -14,7 +14,7 @@ This makes connection between thermal relaxation and main diffusion coeficient c
 void
 MD::takeOver(void) {
 
-	ifstream stream(takeOverFile);
+	/*ifstream stream(takeOverFile);
 	string str;
 	int loop=0;
 	int Nion=vars->Molecules[0].inAtoms.size();
@@ -60,5 +60,5 @@ MD::takeOver(void) {
 		}
 		loop++;
 	}
-	updateInCentersAll();
+	updateInCentersAll();*/
 }

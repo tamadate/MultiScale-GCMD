@@ -9,6 +9,7 @@
 /////////////////////////////////////////////////////////////////////
 void
 Potential::compute(Variables *vars, FLAG *flags){
+	/*
 	Atom *ions = vars->Molecules[0].inAtoms.data();
 	vars->times.tion-=omp_get_wtime();
 	int ipsize=vars->ion_pairs.size();
@@ -36,39 +37,10 @@ Potential::compute(Variables *vars, FLAG *flags){
 			vars->Utotal.Uion+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0);
 			vars->Utotal.Uion+=force_coul;
 		}
-/*		if(flags->vflag){
+		if(flags->vflag){
 			vars->totalVirial+=force_lj+force_coul;
-		}*/
-	}
-	vars->times.tion+=omp_get_wtime();
-}
-
-
-void
-PotentialGasIntra::compute(Variables *vars, FLAG *flags){
-	vars->times.tgas-=omp_get_wtime();
-	Molecule *mols = vars->Molecules.data();
-	for(auto &i : vars->MolID[1]){
-		if(vars->Region[i]==CG) continue;
-		double dr2=vars->distFromIon(mols[i]);
-    	double dx = mols[i].inAtoms[0].qx - mols[i].inAtoms[1].qx;
-		double dy = mols[i].inAtoms[0].qy - mols[i].inAtoms[1].qy;
-		double dz = mols[i].inAtoms[0].qz - mols[i].inAtoms[1].qz;
-		double rsq = (dx * dx + dy * dy + dz * dz);
-		double r = sqrt(rsq);
-		double dr= r - 1.098;
-		double rk = 1221.7 * dr;
-		double force_bond_harmonic = -2.0*rk/r;
-		if(force_bond_harmonic>100) {
-			double xx=0;
 		}
-		mols[i].inAtoms[0].fx += force_bond_harmonic * dx;
-		mols[i].inAtoms[0].fy += force_bond_harmonic * dy;
-		mols[i].inAtoms[0].fz += force_bond_harmonic * dz;
-		mols[i].inAtoms[1].fx -= force_bond_harmonic * dx;
-		mols[i].inAtoms[1].fy -= force_bond_harmonic * dy;
-		mols[i].inAtoms[1].fz -= force_bond_harmonic * dz;
-		if(flags->eflag) vars->Utotal.Ugas+=rk*dr;
 	}
-	vars->times.tgas+=omp_get_wtime();
+	vars->times.tion+=omp_get_wtime();*/
 }
+

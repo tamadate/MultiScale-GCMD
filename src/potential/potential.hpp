@@ -5,23 +5,6 @@
 #include "Tersoff/potentialTersoff.hpp"
 #include "BMHFT/potentialBMHFT.hpp"
 
-class PotentialLJ : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialLJ(){potName="LJ(gas-ion)";};
-		~PotentialLJ(){};
-};
-
-class PotentialLJCoulHybrid : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialLJCoulHybrid(){potName="LJ+Coulombic-AA/CG(vapor-vapor)";};
-		~PotentialLJCoulHybrid(){};
-};
 
 class PotentialLJHybrid : public Potential {
 	private:
@@ -32,34 +15,7 @@ class PotentialLJHybrid : public Potential {
 		~PotentialLJHybrid(){};
 };
 
-class PotentialLJCoul : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialLJCoul(){potName="LJ+Coulombic(vapor-ion)";};
-		~PotentialLJCoul(){};
-};
 
-class PotentialGasGas : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialGasGas(){potName="LJ gas-gas";};
-		~PotentialGasGas(){};
-};
-
-
-
-class PotentialGasIntra : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialGasIntra(){potName="Gas intra";};
-		~PotentialGasIntra(){};
-};
 
 
 class PotentialEfield : public Potential {
@@ -88,11 +44,3 @@ class PotentialIonDipole : public Potential {
 		~PotentialIonDipole(){};
 };
 
-class PotentialVaporIntra : public Potential {
-	private:
-	public:
-		void printName(void) {cout<<potName<<endl;}
-		void compute(Variables *vars, FLAG *flags);
-		PotentialVaporIntra(){potName="AMBER vapor";};
-		~PotentialVaporIntra(){};
-};

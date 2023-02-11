@@ -7,68 +7,44 @@
 /////////////////////////////////////////////////////////////////////
 void
 PotentialLJHybrid::compute(Variables *vars, FLAG *flags) {
-	Molecule *mols = vars->Molecules.data();
-	vars->times.tvg-=omp_get_wtime();
-	for(auto &p : vars->pairsLJHybrid){
-		int i=p.i;
-		int j=p.j;
-		int UNION=vars->Region[i]&vars->Region[j];	// Region[i] union Region[j]
-		double w=mols[i].w*mols[j].w;
-		if((UNION&CG)==CG){
-			double dx = mols[i].qx - mols[j].qx;
-			double dy = mols[i].qy - mols[j].qy;
-			double dz = mols[i].qz - mols[j].qz;
-			adjust_periodic(dx, dy, dz, vars->domainL);
+	vars->times.tvv-=omp_get_wtime();
+	int Natom=vars->position.size();
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *f=vars->force.data();
+	for(int i=0;i<Natom;i++){
+		for(auto j : vars->pairs[i]){
+			int UNION=vars->region[i]&vars->region[j];	// Region[i] union Region[j]
+			double dx = x[i][0] - x[j][0];
+			double dy = x[i][1] - x[j][1];
+			double dz = x[i][2] - x[j][2];
+			//adjust_periodic(dx, dy, dz, vars->domainL);
 			double rsq = (dx * dx + dy * dy + dz * dz);
 			double r2inv = 1/rsq;
 			double r6inv = r2inv * r2inv * r2inv;
-			int type1=mols[i].type;
-			int type2=mols[j].type;
-			double force_lj = r6inv * (vars->pair_coeff_CG[type1][type2][0] * r6inv - vars->pair_coeff_CG[type1][type2][1]);
-			double force_pair = (force_lj)*r2inv*(1-w);
-			if(force_pair>100) {
+			int type1=vars->type[i];
+			int type2=vars->type[j];
+			double force_lj = r6inv * (vars->pair_coeff[type1][type2][0] * r6inv - vars->pair_coeff[type1][type2][1]);
+			double force_coul = qqrd2e * vars->charge[i] * vars->charge[j] * sqrt(r2inv);
+			double w=1;
+			if(vars->region[i]==AACG || vars->region[i]==AACG){
+				double w1=vars->weight[i];
+				double w2=vars->weight[j];
+				w=w1*w2;
+			}
+			double force_pair = (force_lj + force_coul)*r2inv*w;
+			f[i][0] += force_pair * dx;
+			f[i][1] += force_pair * dy;
+			f[i][2] += force_pair * dz;
+			f[j][0] -= force_pair * dx;
+			f[j][1] -= force_pair * dy;
+			f[j][0] -= force_pair * dz;
+			if(force_pair>1000) {
 				double xx=0;
 			}
-			mols[i].fx += force_pair * dx;
-			mols[i].fy += force_pair * dy;
-			mols[i].fz += force_pair * dz;
-			mols[j].fx -= force_pair * dx;
-			mols[j].fy -= force_pair * dy;
-			mols[j].fz -= force_pair * dz;
 			if(flags->eflag) {
-				vars->Utotal.Uvg+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0)*(1-w);
-			}
-		}
-		if((UNION&AA)==AA){
-			for (auto &a1 : mols[i].inAtoms){
-				for (auto &a2 : mols[j].inAtoms){
-					double dx = a2.qx - a1.qx;
-					double dy = a2.qy - a1.qy;
-					double dz = a2.qz - a1.qz;
-					adjust_periodic(dx, dy, dz, vars->domainL);
-					double rsq = (dx * dx + dy * dy + dz * dz);
-					double r2inv = 1/rsq;
-					double r6inv = r2inv * r2inv * r2inv;
-					int type1=a1.type;
-					int type2=a2.type;
-					double force_lj = r6inv * (vars->pair_coeff[type1][type2][0] * r6inv - vars->pair_coeff[type1][type2][1]);
-					double force_pair = (force_lj)*r2inv*w;
-					if(force_pair>100) {
-						double xx=0;
-					}
-					a2.fx += force_pair * dx;
-					a2.fy += force_pair * dy;
-					a2.fz += force_pair * dz;
-					a1.fx -= force_pair * dx;
-					a1.fy -= force_pair * dy;
-					a1.fz -= force_pair * dz;
-					if(flags->eflag) {	
-						vars->Utotal.Uvg+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0)*w;
-					}
-				}
+				vars->Utotal.Uvv+=r6inv * (vars->pair_coeff[type1][type2][0]/12.0 * r6inv - vars->pair_coeff[type1][type2][1]/6.0)*w;
 			}
 		}
 	}
-	vars->times.tvg+=omp_get_wtime();
-
+	vars->times.tvv+=omp_get_wtime();
 }

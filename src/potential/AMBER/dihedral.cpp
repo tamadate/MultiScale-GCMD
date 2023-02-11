@@ -2,34 +2,37 @@
 
 void
 PotentialAMBER::computeDihedral(Variables *vars, FLAG *flags) {
-	Atom *ions = vars->Molecules[0].inAtoms.data();
+	std::array<double,3> *x = vars->position.data();
+	std::array<double,3> *f = vars->force.data();
 	Dihedral_type *dtypes = vars->dtypes.data();
-	Dihedral *dihedrals=vars->Molecules[0].dihedrals.data();
-	int dsize=vars->Molecules[0].dihedrals.size();
+	int dsize=vars->dihedrals.size();
 	for (int idi=0;idi<dsize;idi++) {
 		double ff2[3],ff4[3],ff1[3],ff3[3];
 
-		int i=dihedrals[idi].atom1;
-		int j=dihedrals[idi].atom2;
-		int k=dihedrals[idi].atom3;
-		int l=dihedrals[idi].atom4;
-		int type=dihedrals[idi].type;
+		int i=vars->dihedrals[idi].atom1;
+		int j=vars->dihedrals[idi].atom2;
+		int k=vars->dihedrals[idi].atom3;
+		int l=vars->dihedrals[idi].atom4;
+		int type=vars->dihedrals[idi].type;
 
 		// 1st bond
-		double vb1x = ions[i].qx - ions[j].qx;
-		double vb1y = ions[i].qy - ions[j].qy;
-		double vb1z = ions[i].qz - ions[j].qz;
+		double vb1x = x[i][0] - x[j][0];
+		double vb1y = x[i][1] - x[j][1];
+		double vb1z = x[i][2] - x[j][2];
+		adjust_periodic(vb1x, vb1y, vb1z, vars->domainL);
 		// 2nd bond
-		double vb2x = ions[k].qx - ions[j].qx;
-		double vb2y = ions[k].qy - ions[j].qy;
-		double vb2z = ions[k].qz - ions[j].qz;
+		double vb2x = x[k][0] - x[j][0];
+		double vb2y = x[k][1] - x[j][1];
+		double vb2z = x[k][2] - x[j][2];
+		adjust_periodic(vb2x, vb2y, vb2z, vars->domainL);
 		double vb2xm = -vb2x;
 		double vb2ym = -vb2y;
 		double vb2zm = -vb2z;
 		// 3rd bond
-		double vb3x = ions[l].qx - ions[k].qx;
-		double vb3y = ions[l].qy - ions[k].qy;
-		double vb3z = ions[l].qz - ions[k].qz;
+		double vb3x = x[l][0] - x[k][0];
+		double vb3y = x[l][1] - x[k][1];
+		double vb3z = x[l][2] - x[k][2];
+		adjust_periodic(vb3x, vb3y, vb3z, vars->domainL);
 
 		double ax = vb1y*vb2zm - vb1z*vb2ym;
 		double ay = vb1z*vb2xm - vb1x*vb2zm;
@@ -107,18 +110,18 @@ PotentialAMBER::computeDihedral(Variables *vars, FLAG *flags) {
 		ff3[1] = -sy2 - ff4[1];
 		ff3[2] = -sz2 - ff4[2];
 
-		ions[i].fx += ff1[0];
-		ions[i].fy += ff1[1];
-		ions[i].fz += ff1[2];
-		ions[j].fx += ff2[0];
-		ions[j].fy += ff2[1];
-		ions[j].fz += ff2[2];
-		ions[k].fx += ff3[0];
-		ions[k].fy += ff3[1];
-		ions[k].fz += ff3[2];
-		ions[l].fx += ff4[0];
-		ions[l].fy += ff4[1];
-		ions[l].fz += ff4[2];
+		f[i][0] += ff1[0];
+		f[i][1] += ff1[1];
+		f[i][2] += ff1[2];
+		f[j][0] += ff2[0];
+		f[j][1] += ff2[1];
+		f[j][2] += ff2[2];
+		f[k][0] += ff3[0];
+		f[k][1] += ff3[1];
+		f[k][2] += ff3[2];
+		f[l][0] += ff4[0];
+		f[l][1] += ff4[1];
+		f[l][2] += ff4[2];
 
 	}
 }

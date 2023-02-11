@@ -9,8 +9,8 @@
 /////////////////////////////////////////////////////////////////////
 void
 PotentialSW::compute(Variables *vars, FLAG *flags) {
-	Atom *ions = vars->Molecules[0].inAtoms.data();
-	const int is = vars->Molecules[0].inAtoms.size();
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *f=vars->force.data();
 	U=0;
 	Pressure=0;
 	virial=0;
@@ -20,19 +20,19 @@ PotentialSW::compute(Variables *vars, FLAG *flags) {
 		neighshort.clear();
 //	repulsive forces d(fCfR)/dr
 		for(auto j : a.j){
-			delr[0]=ions[i].qx-ions[j].qx;
-			delr[1]=ions[i].qy-ions[j].qy;
-			delr[2]=ions[i].qz-ions[j].qz;
+			delr[0]=x[i][0]-x[j][0];
+			delr[1]=x[i][1]-x[j][1];
+			delr[2]=x[i][2]-x[j][2];
 			//adjust_periodic(delr[0], delr[1], delr[2]);
 			double rsq = (delr[0]*delr[0] + delr[1]*delr[1] + delr[2]*delr[2]);
 			if(rsq>cut2) continue;
 			double force_pair=twobody(rsq)*0.5;
-			ions[i].fx+=force_pair*delr[0];
-			ions[i].fy+=force_pair*delr[1];
-			ions[i].fz+=force_pair*delr[2];
-			ions[j].fx-=force_pair*delr[0];
-			ions[j].fy-=force_pair*delr[1];
-			ions[j].fz-=force_pair*delr[2];
+			f[i][0]+=force_pair*delr[0];
+			f[i][1]+=force_pair*delr[1];
+			f[i][2]+=force_pair*delr[2];
+			f[j][0]-=force_pair*delr[0];
+			f[j][1]-=force_pair*delr[1];
+			f[j][2]-=force_pair*delr[2];
 
 			neighshort.push_back(j);
 
@@ -41,9 +41,9 @@ PotentialSW::compute(Variables *vars, FLAG *flags) {
 
 //	three body interaction
 		for(auto j : neighshort){
-			delr[0]=ions[i].qx-ions[j].qx;
-			delr[1]=ions[i].qy-ions[j].qy;
-			delr[2]=ions[i].qz-ions[j].qz;
+			delr[0]=x[i][0]-x[j][0];
+			delr[1]=x[i][1]-x[j][1];
+			delr[2]=x[i][2]-x[j][2];
 			//adjust_periodic(delr[0], delr[1], delr[2]);
 			double rsq = (delr[0]*delr[0] + delr[1]*delr[1] + delr[2]*delr[2]);
 
@@ -51,34 +51,35 @@ PotentialSW::compute(Variables *vars, FLAG *flags) {
 
 			for (auto k : neighshort){
 				if(k==j) continue;
-				delr2[0] = ions[i].qx - ions[k].qx;
-				delr2[1] = ions[i].qy - ions[k].qy;
-				delr2[2] = ions[i].qz - ions[k].qz;
+				delr2[0]=x[i][0]-x[k][0];
+				delr2[1]=x[i][1]-x[k][1];
+				delr2[2]=x[i][2]-x[k][2];
 			//	adjust_periodic(delr2[0], delr2[1], delr2[2]);
 				double rsq2 = (delr2[0]*delr2[0] + delr2[1]*delr2[1] + delr2[2]*delr2[2]);
 				if(rsq2>cut2) continue;
 				double fi[3],fj[3],fk[3];
 				threebody(rsq,rsq2,delr,delr2,fj,fk);
-				ions[i].fx+=(fj[0]+fk[0])*0.5;
-				ions[i].fy+=(fj[1]+fk[1])*0.5;
-				ions[i].fz+=(fj[2]+fk[2])*0.5;
-				ions[j].fx-=fj[0]*0.5;
-				ions[j].fy-=fj[1]*0.5;
-				ions[j].fz-=fj[2]*0.5;
-				ions[k].fx-=fk[0]*0.5;
-				ions[k].fy-=fk[1]*0.5;
-				ions[k].fz-=fk[2]*0.5;
+				f[i][0]+=(fj[0]+fk[0])*0.5;
+				f[i][1]+=(fj[1]+fk[1])*0.5;
+				f[i][2]+=(fj[2]+fk[2])*0.5;
+				f[j][0]-=fj[0]*0.5;
+				f[j][1]-=fj[1]*0.5;
+				f[j][2]-=fj[2]*0.5;
+				f[k][0]-=fk[0]*0.5;
+				f[k][1]-=fk[1]*0.5;
+				f[k][2]-=fk[2]*0.5;
 			}
 		}
 	}
 
-	for(int i=0;i<is;i++){
+
+	for(auto i:vars->MolID[0]){
 /*	FILE*f=fopen("force.dat", "a");
 	fprintf(f, "%f\t%f\t%f\t%e\t%e\t%e\t%f\n", ions[i].qx, ions[i].qy, ions[i].qz, ions[i].fx, ions[i].fy, ions[i].fz, energy);
 	fclose(f);*/
-		ions[i].fx*=23.06;
-		ions[i].fy*=23.06;
-		ions[i].fz*=23.06;
+		f[i][0]*=23.06;
+		f[i][1]*=23.06;
+		f[i][2]*=23.06;
 	}
 	U*=0.5;
 //	vars->Potential+=energy*23.06;
@@ -88,8 +89,6 @@ PotentialSW::compute(Variables *vars, FLAG *flags) {
 
 double
 PotentialSW::computeVirial(Variables *vars) {
-	Atom *ions = vars->Molecules[0].inAtoms.data();
-	const int is = vars->Molecules[0].inAtoms.size();
 /*	double virial=0;
 	for(auto &a : vars->ions){
 		virial+=a.fx*a.qx;
@@ -177,18 +176,19 @@ PotentialSW::check_pairlist(Variables *vars){
 void
 PotentialSW::make_pair(Variables *vars){
 	pairs.clear();
-	Atom *ions = vars->Molecules[0].inAtoms.data();
-	int is=vars->Molecules[0].inAtoms.size();
-	for (int i=0; i<is; i++){
+	std::array<double,3> *x=vars->position.data();
+	int is=vars->MolID[0].size();
+	for (int ii=0; ii<is; ii++){
 		Pair_many p;
+		int i=vars->MolID[0][ii];
 		p.i=i;
 		vector<int> js;
-		for (int j=0; j<is; j++){
+		for (int ij=0; ij<is; ij++){
+			int j=vars->MolID[0][ij];
 			if (i==j) continue;
-			double dx = ions[i].qx - ions[j].qx;
-			double dy = ions[i].qy - ions[j].qy;
-			double dz = ions[i].qz - ions[j].qz;
-	//		adjust_periodic(dx, dy, dz);
+			double dx = x[i][0] - x[j][0];
+			double dy = x[i][1] - x[j][1];
+			double dz = x[i][2] - x[j][2];
 			double rsq = (dx * dx + dy * dy + dz * dz);
 			if (rsq < sw_ML2) js.push_back(j);
 		}

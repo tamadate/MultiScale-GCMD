@@ -5,14 +5,11 @@ velocityScaling::Tcontrol(int LOOP) {
 	if(interval==loop){
 		computeTnow();
 		double Coeff=sqrt(T/Tnow);
-		for (int j=1;j<3;j++){
-			for (auto i : vars->MolID[j]) {
-				if(vars->Region[i]==CG){
-					vars->Molecules[i].px *= Coeff;
-					vars->Molecules[i].py *= Coeff;
-					vars->Molecules[i].pz *= Coeff;
-				}
-			}
+		std::array<double,3> *v=vars->velocity.data();
+		for(auto v :vars->velocity){
+			v[0] *= Coeff;
+			v[1] *= Coeff;
+			v[2] *= Coeff;
 		}
 		if(LOOP==1) loop=0;
 	}

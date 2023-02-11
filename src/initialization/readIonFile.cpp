@@ -120,39 +120,54 @@ Variables::readIonFile(char* infile){
 
 		// Initial positions of atoms in the center particle (ion)
 		if (iflag==5) {
-			Atom a;
 			int loop=0;
-			a.fx=a.fy=a.fz=a.px=a.py=a.pz=0;
+			std::array<double,3> q;
+			std::array<double,3> p;
+			std::array<double,3> f;
 			while(getline(stream,tmp,'\t')) {
-				if (loop==0) a.id=stoi(tmp);
-				if (loop==1) {
-					a.type=stoi(tmp)-1+Natypes;
-					a.mass=atypes[a.type].mass;
+				if (loop==0) {
+					MolID[0].push_back(stoi(tmp)-1);
 				}
-				if (loop==2) a.charge=stod(tmp);
-				if (loop==3) a.qx=stod(tmp);
-				if (loop==4) a.qy=stod(tmp);
-				if (loop==5) a.qz=stod(tmp);
-				if (loop==6) a.px=stod(tmp);
-				if (loop==7) a.py=stod(tmp);
-				if (loop==8) a.pz=stod(tmp);
+				if (loop==1) {
+					int t=stoi(tmp)-1+Natypes;
+					type.push_back(t);
+					mass.push_back(atypes[t].mass);
+				}
+				if (loop==2) charge.push_back(stod(tmp));
+				if (loop==3) q[0]=stod(tmp);
+				if (loop==4) q[1]=stod(tmp);
+				if (loop==5) q[2]=stod(tmp);
+				if (loop==6) p[0]=stod(tmp);
+				if (loop==7) p[1]=stod(tmp);
+				if (loop==8) p[2]=stod(tmp);
+				if (loop==9) f[0]=stod(tmp);
+				if (loop==10) f[1]=stod(tmp);
+				if (loop==11) f[2]=stod(tmp);
 				loop++;
 			}
-			Molecules[0].inAtoms.push_back(a);
+			position.push_back(q);
+			velocity.push_back(p);
+			force.push_back(f);
+			region.push_back(AA);
+			weight.push_back(1);
+			std::vector<int> pdum;
+			ignorePairs.push_back(pdum);
+			pairs.push_back(pdum);
 		}
 
 		// Bond interactions list
 		if (iflag==6) {
 			Bond b;
 			int loop=0;
-			int atom1, atom2, type;
 			while(getline(stream,tmp,'\t')) {
 				if (loop==0) b.atom1 = stoi(tmp)-1;
 				if (loop==1) b.atom2 = stoi(tmp)-1;
 				if (loop==2) b.type=stoi(tmp)-1+Nbtypes;
 				loop++;
 			}
-			Molecules[0].bonds.push_back(b);
+			ignorePairs[b.atom1].push_back(b.atom2);
+			ignorePairs[b.atom2].push_back(b.atom1);
+			bonds.push_back(b);
 		}
 
 		// Angle interactions list
@@ -166,7 +181,9 @@ Variables::readIonFile(char* infile){
 				if (loop==3) c.type=stoi(tmp)-1+Nctypes;
 				loop++;
 			}
-			Molecules[0].angles.push_back(c);
+			ignorePairs[c.atom1].push_back(c.atom3);
+			ignorePairs[c.atom3].push_back(c.atom1);
+			angles.push_back(c);
 		}
 
 		// Dihedral interactions list
@@ -181,7 +198,9 @@ Variables::readIonFile(char* infile){
 				if (loop==4) d.type=stoi(tmp)-1+Ndtypes;
 				loop++;
 			}
-			Molecules[0].dihedrals.push_back(d);
+			ignorePairs[d.atom1].push_back(d.atom4);
+			ignorePairs[d.atom4].push_back(d.atom1);
+			dihedrals.push_back(d);
 		}
 	}
 }

@@ -9,20 +9,22 @@ Compute ion intramolecular interaction _ Born-Mayer-Huggins-Fumi-Tosi
 /**********************************Force calculation******************************************/
 void
 PotentialBorn::compute(Variables *vars, FLAG *flags) {
-	Atom *ions = vars->Molecules[0].inAtoms.data();
-	const int is = vars->Molecules[0].inAtoms.size();
+	
+	const int is = vars->MolID[0].size();
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *f=vars->force.data();
 	vars->times.tion-=omp_get_wtime();
 	for(int i=0; i<is-1; i++){
 		for(int j=i+1; j<is; j++){
-			double dx = ions[i].qx - ions[j].qx;
-			double dy = ions[i].qy - ions[j].qy;
-			double dz = ions[i].qz - ions[j].qz;
+			double dx = x[i][0] - x[j][0];
+			double dy = x[i][1] - x[j][1];
+			double dz = x[i][2] - x[j][2];
 			double rsq = (dx * dx + dy * dy + dz * dz);
 			double r2inv = 1/rsq;
 			double r6inv = r2inv * r2inv * r2inv;
 			double r=sqrt(rsq);
-			int type1=ions[i].type;
-			int type2=ions[j].type;
+			int type1=vars->type[i];
+			int type2=vars->type[j];
 
 			//vars->bornCoeff[type1][type2][0]=A
 			//vars->bornCoeff[type1][type2][1]=6C
@@ -34,15 +36,15 @@ PotentialBorn::compute(Variables *vars, FLAG *flags) {
 			double force1 = pairCoeff[type1][type2][4]*pairCoeff[type1][type2][0]*r*rexp;
 			double force2 = -pairCoeff[type1][type2][1]*r6inv;
 			double force3 = -pairCoeff[type1][type2][2]*r6inv*r2inv;
-			double force_coul = qqrd2e*ions[i].charge*ions[j].charge*sqrt(r2inv);
+			double force_coul = qqrd2e*vars->charge[i]*vars->charge[j]*sqrt(r2inv);
 			double force_pair = (force1+force2+force3+force_coul)*r2inv;
 
-			ions[i].fx += force_pair * dx;
-			ions[i].fy += force_pair * dy;
-			ions[i].fz += force_pair * dz;
-			ions[j].fx -= force_pair * dx;
-			ions[j].fy -= force_pair * dy;
-			ions[j].fz -= force_pair * dz;
+			f[i][0] += force_pair * dx;
+			f[i][1] += force_pair * dy;
+			f[i][2] += force_pair * dz;
+			f[j][0] -= force_pair * dx;
+			f[j][1] -= force_pair * dy;
+			f[j][2] -= force_pair * dz;
 			if(flags->eflag) {
 				vars->Utotal.Uion+=force_coul;
 				vars->Utotal.Uion+=rexp*pairCoeff[type1][type2][0];

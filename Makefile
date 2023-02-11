@@ -1,7 +1,7 @@
 NAME        = MD.out
 SRCS        = ./src/*cpp ./src/*/*cpp ./src/*/*/*cpp
 OBJS        = $(SRCS:.cpp=.o)
-CXX         = g++
+CXX         = mpicxx
 CXXFLAGS    = -std=c++11 -fopenmp
 
 .PHONY: all

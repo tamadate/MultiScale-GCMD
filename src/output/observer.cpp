@@ -3,33 +3,16 @@
 //------------------------------------------------------------------------
 void
 Observer::computeProps(Variables *vars,int molID){
-	Molecule *mols = vars -> Molecules.data();
+	std::array<double,3> *v=vars->velocity.data();
 	Kin[molID]=0;
-	double Nin=0;
-	Kout[molID]=0;
-	double Nout=0;
-
+	int Natom=vars->MolID[molID].size();
 	for(auto i : vars->MolID[molID]){
-		if(vars->Region[i]==CG){
-			Kout[molID] += mols[i].px * mols[i].px * mols[i].mass;
-			Kout[molID] += mols[i].py * mols[i].py * mols[i].mass;
-			Kout[molID] += mols[i].pz * mols[i].pz * mols[i].mass;
-			Nout++;
-		}
-		else{
-			for (auto &at : mols[i].inAtoms){
-				Kin[molID] += at.px * at.px * at.mass;
-				Kin[molID] += at.py * at.py * at.mass;
-				Kin[molID] += at.pz * at.pz * at.mass;
-				Nin++;
-			}
-		}
+		Kin[molID] += v[i][0] * v[i][0] * vars->mass[i];
+		Kin[molID] += v[i][1] * v[i][1] * vars->mass[i];
+		Kin[molID] += v[i][2] * v[i][2] * vars->mass[i];
 	}
 	Kin[molID]*= (0.5 * real_to_kcalmol);
-	Tin[molID]=Kin[molID]/double(Nin)*coeff;
-	Kout[molID]*= (0.5 * real_to_kcalmol);
-	Tout[molID]=Kout[molID]/double(Nout)*coeff;
-
+	Tin[molID]=Kin[molID]/double(Natom)*coeff;
 };
 
 

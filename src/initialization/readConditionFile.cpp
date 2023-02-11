@@ -36,20 +36,9 @@ MD::readCondFile(char* condfile){
 			flags->takeOver=1;
 			cout<<"Take over from -->\t"<<readings[1]<<endl;
 		}
-		// Vapor sticking position file name
-		if(readings[0]=="VaporStickPositions"){
-			strcpy(vaporStickFile,readings[1].c_str());
-			positionLogStep=stoi(readings[2]);
-			ifstream stream2(vaporStickFile);
-			string str2;
-			while(getline(stream2,str2)) {
-				if(str2.length()==0) continue;
-				stickPositionList.push_back(stoi(str2)-1);
-			}
-			cout<<"Vapor stick position file -->\t\t"<<readings[1]<<endl;
-		}
 		// N of gas molecule and specie 
 		if(readings[0]=="Gas"){
+			std::array<double,3> q;
 			Atom_type at;
 			if(readings[1]=="He"){
 				gastype=1;
@@ -57,6 +46,11 @@ MD::readCondFile(char* condfile){
 				at.name="He(g)";
 				at.coeff1=0.0203;
 				at.coeff2=2.556;
+				q[0]=0;
+				q[1]=0;
+				q[2]=0;
+				vars->positionGas.push_back(q);
+				vars->chargeGas.push_back(0);
 			}
 			if(readings[1]=="N2"){
 				gastype=2;
@@ -64,6 +58,23 @@ MD::readCondFile(char* condfile){
 				at.name="N(g)";
 				at.coeff1=0.1098;
 				at.coeff2=3.27351824993;
+				q[0]=-0.549;
+				q[1]=0;
+				q[2]=0;
+				vars->positionGas.push_back(q);
+				vars->chargeGas.push_back(0);
+				q[0]=0.549;
+				vars->positionGas.push_back(q);
+				vars->chargeGas.push_back(0);
+				Bond_type bt;
+				bt.coeff[0]=1221.7;
+				bt.coeff[1]=1.098;
+				vars->btypes.push_back(bt);
+				Bond bon;
+				bon.atom1=0;
+				bon.atom2=1;
+				bon.type=0;
+				vars->bonds_g.push_back(bon);
 			}
 			if(readings[1]=="N2monoatomic"){
 				gastype=3;
@@ -71,6 +82,11 @@ MD::readCondFile(char* condfile){
 				at.name="N2(g)";
 				at.coeff1=0.14397;
 				at.coeff2=3.798;
+				q[0]=0;
+				q[1]=0;
+				q[2]=0;
+				vars->positionGas.push_back(q);
+				vars->chargeGas.push_back(0);
 			}
 			if(readings[1]=="Ar"){
 				gastype=4;
@@ -78,6 +94,11 @@ MD::readCondFile(char* condfile){
 				at.name="Ar(g)";
 				at.coeff1=0.14397;
 				at.coeff2=3.798;
+				q[0]=0;
+				q[1]=0;
+				q[2]=0;
+				vars->positionGas.push_back(q);
+				vars->chargeGas.push_back(0);
 			}
 			vars->atypes.push_back(at);
 			Nof_around_gas=stoi(readings[2]);
@@ -234,11 +255,14 @@ MD::readCondFile(char* condfile){
 		}
 	}
 	vars->domainL=pow(Nof_around_gas*kb*T/p,1/3.0)*1e10;  // Calculation box size
-	vars->dcell=vars->domainL/double(vars->cellIndexSize);
 	V=vars->domainL*vars->domainL*vars->domainL;		// Calculation box volume
 	CL2 = (CUTOFF)*(CUTOFF);
-	ML2 = (CUTOFF+MARGIN)*(CUTOFF+MARGIN);
+	double CLML=CUTOFF+MARGIN;
+	ML2 = CLML*CLML;
+	vars->initialCellIndex(CLML);
+	vars->dcell=vars->domainL/double(vars->cellIndexSize);
 	cout<<"Cut off length\t\t"<<CUTOFF<<" ang."<<endl;
 	cout<<"Margin length\t\t"<<MARGIN<<" ang."<<endl;
 	cout<<"Domain size\t\t"<<vars->domainL<<" ang."<<endl;
+	cout<<"Number of cells\t\t"<<vars->cellIndexSize<<endl;
 }

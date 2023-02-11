@@ -6,40 +6,36 @@
 
 void
 MD::boundary_scaling_gas_move(void){
-	double vMB, vxMB, vyMB, vzMB, vx, vy, vz, v2, v, mod_factor;
-	#pragma omp parallel for
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *v=vars->velocity.data();
+	
 	for (auto i : vars->MolID[1]){
-		double ionx=pre_ion[0];
-		double iony=pre_ion[1];
-		double ionz=pre_ion[2];
 		int flag, flagx, flagy, flagz;
 		double HL=vars->domainL*0.5;
-		Molecule &mol=vars->Molecules[i];
 		flag=flagx=flagy=flagz=0;
-		double dx=mol.qx-ionx;
-		double dy=mol.qy-iony;
-		double dz=mol.qz-ionz;
+		double dx=x[i][0]-pre_ion[0];
+		double dy=x[i][1]-pre_ion[1];
+		double dz=x[i][2]-pre_ion[2];
 		double dr2=dx*dx+dy*dy+dz*dz;
-		mol.w=weightFunc(dr2);
 
-		if (dx < -HL) mol.qx += vars->domainL, flagx--, flag++;
-		if (dy < -HL) mol.qy += vars->domainL, flagy--, flag++;
-		if (dz < -HL) mol.qz += vars->domainL, flagz--, flag++;
-		if (dx > HL) mol.qx -= vars->domainL, flagx++, flag++;
-		if (dy > HL) mol.qy -= vars->domainL, flagy++, flag++;
-		if (dz > HL) mol.qz -= vars->domainL, flagz++, flag++;
+		if (dx < -HL) x[i][0] += vars->domainL, flagx--, flag++;
+		if (dy < -HL) x[i][1] += vars->domainL, flagy--, flag++;
+		if (dz < -HL) x[i][2] += vars->domainL, flagz--, flag++;
+		if (dx > HL) x[i][0] -= vars->domainL, flagx++, flag++;
+		if (dy > HL) x[i][1] -= vars->domainL, flagy++, flag++;
+		if (dz > HL) x[i][2] -= vars->domainL, flagz++, flag++;
 		if (flag>0) {
 			if(mbdist->number>mbdist->vflux.size()*0.9) {mbdist->makeWeightedMB(pp->cgas,pp->mgas,T);}
-			vx = mol.px;
-			vy = mol.py;
-			vz = mol.pz;
-			v2 = vx*vx+vy*vy+vz*vz;
-			v = sqrt(v2);
-			vMB = mbdist->vflux[mbdist->number]*1e-5;
-			mod_factor= vMB/v;
-			mol.px = vx * mod_factor;
-			mol.py = vy * mod_factor;
-			mol.pz = vz * mod_factor;
+			double vx = v[i][0];
+			double vy = v[i][1];
+			double vz = v[i][2];
+			double v2 = vx*vx+vy*vy+vz*vz;
+			double vnew = sqrt(v2);
+			double vMB = mbdist->vflux[mbdist->number]*1e-5;
+			double mod_factor= vMB/vnew;
+			v[i][0] = vx * mod_factor;
+			v[i][1] = vy * mod_factor;
+			v[i][2] = vz * mod_factor;
 			mbdist->number++;
 		}
 	}
@@ -47,40 +43,35 @@ MD::boundary_scaling_gas_move(void){
 
 void
 MD::boundary_scaling_vapor_move(void){
-	double vMB, vxMB, vyMB, vzMB, vx, vy, vz, v2, v, mod_factor;
-	#pragma omp parallel for
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *v=vars->velocity.data();
 	for (auto i : vars->MolID[2]){
-		double ionx=pre_ion[0];
-		double iony=pre_ion[1];
-		double ionz=pre_ion[2];
 		int flag, flagx, flagy, flagz;
 		double HL=vars->domainL*0.5;
-		Molecule &mol=vars->Molecules[i];
 		flag=flagx=flagy=flagz=0;
-		double dx=mol.qx-ionx;
-		double dy=mol.qy-iony;
-		double dz=mol.qz-ionz;
+		double dx=x[i][0]-pre_ion[0];
+		double dy=x[i][1]-pre_ion[1];
+		double dz=x[i][2]-pre_ion[2];
 		double dr2=dx*dx+dy*dy+dz*dz;
-		mol.w=weightFunc(dr2);
 
-		if (dx < -HL) mol.qx += vars->domainL, flagx--, flag++;
-		if (dy < -HL) mol.qy += vars->domainL, flagy--, flag++;
-		if (dz < -HL) mol.qz += vars->domainL, flagz--, flag++;
-		if (dx > HL) mol.qx -= vars->domainL, flagx++, flag++;
-		if (dy > HL) mol.qy -= vars->domainL, flagy++, flag++;
-		if (dz > HL) mol.qz -= vars->domainL, flagz++, flag++;
+		if (dx < -HL) x[i][0] += vars->domainL, flagx--, flag++;
+		if (dy < -HL) x[i][1] += vars->domainL, flagy--, flag++;
+		if (dz < -HL) x[i][2] += vars->domainL, flagz--, flag++;
+		if (dx > HL) x[i][0] -= vars->domainL, flagx++, flag++;
+		if (dy > HL) x[i][1] -= vars->domainL, flagy++, flag++;
+		if (dz > HL) x[i][2] -= vars->domainL, flagz++, flag++;
 		if (flag>0) {
-			if(mbdistV->number>mbdistV->vflux.size()*0.9) {mbdistV->makeWeightedMB(pp->cvapor,pp->mvapor,T);}
-			vx=mol.px;
-			vy=mol.py;
-			vz=mol.pz;
-			v2 = vx*vx+vy*vy+vz*vz;
-			v = sqrt(v2);
-			vMB = mbdistV->vflux[mbdistV->number]*1e-5;
-			mod_factor= vMB/v;
-			mol.px = vx * mod_factor;
-			mol.py = vy * mod_factor;
-			mol.pz = vz * mod_factor;
+			if(mbdistV->number>mbdistV->vflux.size()*0.9) {mbdistV->makeWeightedMB(pp->cgas,pp->mgas,T);}
+			double vx = v[i][0];
+			double vy = v[i][1];
+			double vz = v[i][2];
+			double v2 = vx*vx+vy*vy+vz*vz;
+			double vnew = sqrt(v2);
+			double vMB = mbdistV->vflux[mbdistV->number]*1e-5;
+			double mod_factor= vMB/vnew;
+			v[i][0] = vx * mod_factor;
+			v[i][1] = vy * mod_factor;
+			v[i][2] = vz * mod_factor;
 			mbdistV->number++;
 		}
 	}

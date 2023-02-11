@@ -8,7 +8,7 @@ compute intramolecular interaction - AMBER
 void
 PotentialAMBER::compute(Variables *vars, FLAG *flags) {
 	vars->times.tion-=omp_get_wtime();
-	computeLong(vars,flags);
+	//computeLong(vars,flags);
 	computeBond(vars,flags);
 	computeAngle(vars,flags);
 	computeDihedral(vars,flags);
@@ -19,7 +19,7 @@ void
 PotentialAMBER::initialAMBER(Variables *vars, FLAG *flags){
 	std::vector<Pair> noLong;
 	Pair p;
-	for (auto &b : vars-> Molecules[0].bonds) {
+	for (auto &b : vars->bonds) {
 		p.i=b.atom1;
 		p.j=b.atom2;
 		if(p.j<p.i) {
@@ -28,7 +28,7 @@ PotentialAMBER::initialAMBER(Variables *vars, FLAG *flags){
 		}
 		noLong.push_back(p);
 	}
-	for (auto &b : vars-> Molecules[0].angles) {
+	for (auto &b : vars->angles) {
 		p.i=b.atom1;
 		p.j=b.atom3;
 		if(p.j<p.i) {
@@ -37,7 +37,7 @@ PotentialAMBER::initialAMBER(Variables *vars, FLAG *flags){
 		}
 		noLong.push_back(p);
 	}
-	for (auto &b : vars-> Molecules[0].dihedrals) {
+	for (auto &b : vars->dihedrals) {
 		p.i=b.atom1;
 		p.j=b.atom4;
 		if(p.j<p.i) {
@@ -47,8 +47,7 @@ PotentialAMBER::initialAMBER(Variables *vars, FLAG *flags){
 		noLong.push_back(p);
 	}
 
-	Atom *ions=vars->Molecules[0].inAtoms.data();
-	const int is=vars->Molecules[0].inAtoms.size();
+	const int is=vars->MolID[0].size();
 	for(int i=0;i<is-1;i++){
 		for(int j=i+1;j<is;j++){
 			int flag=1;

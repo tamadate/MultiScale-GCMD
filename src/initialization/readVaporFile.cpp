@@ -109,25 +109,21 @@ Variables::readVaporFile(char* infile){
 			dtypes.push_back(dit);
 		}
 		if (iflag==5) {
-			Atom a;
+			std::array<double,3> q;
 			int loop=0;
-			a.fx=a.fy=a.fz=a.px=a.py=a.pz=0;
 			while(getline(stream,tmp,'\t')) {
-				if (loop==0) a.id=stoi(tmp);
 				if (loop==1) {
-          a.type=stoi(tmp)-1+Natypes;
-          a.mass=atypes[a.type].mass;
-        }
-				if (loop==2) a.charge=stod(tmp);
-				if (loop==3) a.qx=stod(tmp);
-				if (loop==4) a.qy=stod(tmp);
-				if (loop==5) a.qz=stod(tmp);
-				if (loop==6) a.px=stod(tmp);
-				if (loop==7) a.py=stod(tmp);
-				if (loop==8) a.pz=stod(tmp);
+					int t=stoi(tmp)-1+Natypes;
+					typeVapor.push_back(t);
+					massVapor.push_back(atypes[t].mass);
+				}
+				if (loop==2) chargeVapor.push_back(stod(tmp));
+				if (loop==3) q[0]=stod(tmp);
+				if (loop==4) q[1]=stod(tmp);
+				if (loop==5) q[2]=stod(tmp);
 				loop++;
 			}
-			atomVapor.push_back(a);
+			positionVapor.push_back(q);
 		}
 		if (iflag==6) {
 		 	Bond b;

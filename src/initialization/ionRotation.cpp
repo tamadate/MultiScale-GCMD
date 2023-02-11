@@ -3,12 +3,17 @@
 void
 Variables::ionRotation(void){
   random_device seed;
-	double A,B,C,x,y,z;
+	double A,B,C;
 	A=seed(),B=seed(),C=seed();
-	for(auto &a : Molecules[0].inAtoms) {x=a.qx,y=a.qy,z=a.qz; ROTATION(a.qx,a.qy,a.qz,A,B,C,x,y,z);}
-    int is=Molecules[0].inAtoms.size();
-    for(int i=0;i<is-1;i++) {
-        for(int j=i+1;j<is;j++){
+	for(auto i:MolID[0]) {
+        double x=position[i][0];
+        double y=position[i][1];
+        double z=position[i][2];
+        ROTATION(position[i][0],position[i][1],position[i][2],A,B,C,x,y,z);
+    }
+    int Nion=MolID[0].size();
+    for(int i=0;i<Nion-1;i++) {
+        for(int j=i+1;j<Nion;j++){
             int flag=0;
             for (auto &d : dihedrals) {
                 int I=d.atom1;

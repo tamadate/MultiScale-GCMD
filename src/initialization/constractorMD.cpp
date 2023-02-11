@@ -22,14 +22,16 @@ MD::MD(char* condfile, int calcNumber) {
 	// Default calculation parameters
 	dt = 0.5;	/*	fs	*/
 	CUTOFF = 15.0;	/*	A	*/
-	MARGIN = 5.0;	/*	A	*/
+	MARGIN = 10.0;	/*	A	*/
 	OBSERVE=10000000;
 	T=300;
 	p=1e5;
-	positionLogStep=0;
-	totalVaporIn=1;
 
-	setCondition(condfile);
+	readCondFile(condfile);	
+	pp->readIonProp(atomFile);	// Get ion total mass & net charge
+	pp->readVaporProp(vaporFile);	// Get vapor total mass & net charge
+	pp->setPhysicalProp(gastype,T,p);	// Set physical properties (mass of gas molecule, gas viscosity, etc...)
+
 	//thermo = new NoseHoover(vars,obs,dt,T,10000);
 	thermo = new velocityScaling(vars,obs,T);
 	output_initial();	
@@ -43,11 +45,9 @@ MD::MD(char* condfile, int calcNumber) {
 		//cout<<takeOverFile<<endl;
 	}
 
+	setOrigin();
 	initialization_gas();	//Set initial positions & velocities for gas
  	initialization_vapor();	//Set initial positions & velocities for vapor
-	setRegion();
-	updateInCentersAll();
-	boundary_scaling_ion_move();
 	mbdist -> makeWeightedMB(pp->cgas,pp->mgas,T);
 	mbdistV -> makeWeightedMB(pp->cvapor,pp->mvapor,T);
 	make_pair();

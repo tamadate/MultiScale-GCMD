@@ -10,44 +10,46 @@ MD::boundary_scaling_ion_move(void){
 	int flag, flagx, flagy, flagz;
 	random_device seed;
 	mt19937 mt(seed());
-	Molecule *mols = vars -> Molecules.data();
+
+	std::array<double,3> *x=vars->position.data();
+	std::array<double,3> *v=vars->velocity.data();
+	std::array<double,3> *xmol=vars->molPosition.data();
 
 	normal_distribution<> distgas(0.0, sqrt(kb*T/pp->mgas));
-	for (auto i : vars->MolID[1]){
+	normal_distribution<> distvapor(0.0, sqrt(kb*T/pp->mvapor));
+	for (auto i : vars->group[1]){
 		flag=flagx=flagy=flagz=0;
-		double dx=mols[i].qx-mols[0].qx;
-		double dy=mols[i].qy-mols[0].qy;
-		double dz=mols[i].qz-mols[0].qz;
-		if (dx < -HL) mols[i].qx += vars->domainL, flagx--, flag++;
-		if (dy < -HL) mols[i].qy += vars->domainL, flagy--, flag++;
-		if (dz < -HL) mols[i].qz += vars->domainL, flagz--, flag++;
-		if (dx > HL) mols[i].qx -= vars->domainL, flagx++, flag++;
-		if (dy > HL) mols[i].qy -= vars->domainL, flagy++, flag++;
-		if (dz > HL) mols[i].qz -= vars->domainL, flagz++, flag++;
+		double dx=xmol[i][0]-origin[0];
+		double dy=xmol[i][1]-origin[1];
+		double dz=xmol[i][2]-origin[2];
+		if (dx < -HL) xmol[i][0] += vars->domainL, flag++;
+		if (dy < -HL) xmol[i][1] += vars->domainL, flag++;
+		if (dz < -HL) xmol[i][2] += vars->domainL, flag++;
+		if (dx > HL) xmol[i][0] -= vars->domainL, flag++;
+		if (dy > HL) xmol[i][1] -= vars->domainL, flag++;
+		if (dz > HL) xmol[i][2] -= vars->domainL, flag++;
 		if (flag>0) {
-			mols[i].px = distgas(mt) *1e-5;
-			mols[i].py = distgas(mt) *1e-5;
-			mols[i].pz = distgas(mt) *1e-5;
+			v[i][0] = distgas(mt) *1e-5;
+			v[i][1] = distgas(mt) *1e-5;
+			v[i][2] = distgas(mt) *1e-5;
 		}
 	}
 
-	normal_distribution<> distvapor(0.0, sqrt(kb*T/pp->mvapor));
 	for (auto i : vars->MolID[2]){
 		flag=flagx=flagy=flagz=0;
-		double dx=mols[i].qx-mols[0].qx;
-		double dy=mols[i].qy-mols[0].qy;
-		double dz=mols[i].qz-mols[0].qz;
-		if (mols[i].qx < mols[0].qx-HL) mols[i].qx += vars->domainL, flag++;
-		if (mols[i].qy < mols[0].qy-HL) mols[i].qy += vars->domainL, flag++;
-		if (mols[i].qz < mols[0].qz-HL) mols[i].qz += vars->domainL, flag++;
-		if (mols[i].qx > mols[0].qx+HL) mols[i].qx -= vars->domainL, flag++;
-		if (mols[i].qy > mols[0].qy+HL) mols[i].qy -= vars->domainL, flag++;
-		if (mols[i].qz > mols[0].qz+HL) mols[i].qz -= vars->domainL, flag++;
+		double dx=xmol[i][0]-origin[0];
+		double dy=xmol[i][1]-origin[1];
+		double dz=xmol[i][2]-origin[2];
+		if (dx < -HL) xmol[i][0] += vars->domainL, flagx--, flag++;
+		if (dy < -HL) xmol[i][1] += vars->domainL, flagy--, flag++;
+		if (dz < -HL) xmol[i][2] += vars->domainL, flagz--, flag++;
+		if (dx > HL) xmol[i][0] -= vars->domainL, flagx++, flag++;
+		if (dy > HL) xmol[i][1] -= vars->domainL, flagy++, flag++;
+		if (dz > HL) xmol[i][2] -= vars->domainL, flagz++, flag++;
 		if (flag>0) {
-			mols[i].px = distvapor(mt) *1e-5;
-			mols[i].py = distvapor(mt) *1e-5;
-			mols[i].pz = distvapor(mt) *1e-5;
+			v[i][0] = distgas(mt) *1e-5;
+			v[i][1] = distgas(mt) *1e-5;
+			v[i][2] = distgas(mt) *1e-5;
 		}
 	}
-
 }

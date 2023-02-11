@@ -4,13 +4,12 @@ Variables::Variables(void) {
   time = 0.0;
   Utotal.Uion=Utotal.Ugas=Utotal.Uvap=Utotal.Ugi=Utotal.Ugg=Utotal.Uvg=Utotal.Uvi=Utotal.Uvv=0;
   MolID.resize(3);
-  initialCellIndex();
 }
 
 
 void
-Variables::initialCellIndex(void){
-  cellIndexSize=5;
+Variables::initialCellIndex(double CLML){
+  cellIndexSize=int(domainL/(CLML));
   cellIndex.resize(cellIndexSize);
   for(auto &a : cellIndex) {
     a.resize(cellIndexSize);
@@ -55,12 +54,12 @@ void
 Variables::ionInitialVelocity(double T) {
 	random_device seed;
 	default_random_engine engine(seed());
-  for(auto &a : Molecules[0].inAtoms) {
-    double matom=a.mass*1e-3/Nw;
+  for(auto i:MolID[0]) {
+    double matom=mass[i]*1e-3/Nw;
     normal_distribution<> dist(0.0, sqrt(kb*T/matom));
-    a.px=dist(engine)*1e-5;
-    a.py=dist(engine)*1e-5;
-    a.pz=dist(engine)*1e-5;
+    velocity[i][0]=dist(engine)*1e-5;
+    velocity[i][1]=dist(engine)*1e-5;
+    velocity[i][2]=dist(engine)*1e-5;
 	}
 }
 

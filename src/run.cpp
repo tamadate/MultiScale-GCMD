@@ -23,7 +23,7 @@ MD::run(char** argv) {
 	for (itime=0; itime < step_relax; itime++) {
 		if (itime%OBSERVE==0) {
 			display(1);
-			exportDumpIn();
+			exportDump();
       		//exportDumpOut(); // secret command
 			vars->time=(itime*dt);
 		}
@@ -41,22 +41,18 @@ step of simulation, reset the margine size.
 	vars->time=0;
 	itime=0;
 	setPotential(flags,1);
-	updateInCentersAll();
 	make_pair();
 	setNVE();
 
 	/****Main simulaiton****/
 	for (itime=0; itime<Noftimestep; itime++) {
-		if (positionLogStep>0){
-		if(itime%positionLogStep==0) positionLog();
-		}
 		if(itime%logger==0){
 		output();
 		vars->time+=(logger*dt);
 		}
 		if (itime%OBSERVE==0) {
 			display(0);
-			exportDumpIn();
+			exportDump();
 			//exportDumpOut();
 		}
 		if ((itime+1)%OBSERVE==0) {

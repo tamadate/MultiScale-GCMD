@@ -18,17 +18,6 @@ struct Dihedral_type {
 	double coeff[15];
 };
 //------------------------------------------------------------------------
-struct Atom {
- 	double qx, qy, qz;
-	double px, py, pz;
-	double charge;
-	int type;
-	int id;
-	double fx, fy, fz;
-	double mass;
-	int ix, iy, iz;
-};
-
 //------------------------------------------------------------------------
 struct Bond {
 	int atom1, atom2, type;
@@ -51,20 +40,6 @@ struct Pair_many{
 };
 
 //------------------------------------------------------------------------
-struct Molecule {
- 	double qx, qy, qz;
-	double px, py, pz;
-	double fx, fy, fz;
-	double mass;
-	int id;
-	double w;
-	int type;
-	std::vector<Atom> inAtoms;
-	std::vector<Bond> bonds;
-	std::vector<Angle> angles;
-	std::vector<Dihedral> dihedrals;
-};
-
 struct Potentials {
   double Uion;
 	double Ugas;
